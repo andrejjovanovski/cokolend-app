@@ -1,11 +1,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router } from "@inertiajs/react";
+import {Head, Link, router} from "@inertiajs/react";
 import Card from "@/Components/Card.jsx";
 import Pagination from "@/Components/Pagination.jsx";
 import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
 
-export default function Index({ auth, orders, queryParams = null }) {
+export default function Index({auth, orders, queryParams = null}) {
 
   queryParams = queryParams || {}
 
@@ -29,13 +29,21 @@ export default function Index({ auth, orders, queryParams = null }) {
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-          Orders
-        </h2>
+        <div className="flex items-center justify-between w-full">
+          <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+            Orders
+          </h2>
+
+          <Link
+            href={route('order.create')}
+            className="bg-emerald-500 px-4 py-2 text-white rounded shadow transition-all hover:bg-emerald-600 tracking-widest uppercase text-xs">
+            Create order
+          </Link>
+        </div>
       }
     >
 
-      <Head title='Orders' />
+      <Head title='Orders'/>
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
@@ -73,7 +81,7 @@ export default function Index({ auth, orders, queryParams = null }) {
                   />
                 ))}
               </div>
-              <Pagination links={orders.meta.links} />
+              <Pagination links={orders.meta.links}/>
             </div>
           </div>
         </div>

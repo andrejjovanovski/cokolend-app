@@ -24,6 +24,8 @@ return new class extends Migration
             $table->date('delivery_date');
             $table->time('delivery_time');
             $table->boolean('delivered');
+            $table->string('customer_name');
+            $table->string('customer_phone_number');
             $table->timestamps();
         });
     }
