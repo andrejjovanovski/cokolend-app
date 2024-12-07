@@ -3,19 +3,27 @@ import {Head, Link, useForm} from "@inertiajs/react";
 import InputLabel from "@/Components/InputLabel.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import InputError from "@/Components/InputError.jsx";
+import TextAreaInput from "@/Components/TextAreaInput.jsx";
 
 export default function Create({auth}) {
 
   const {data, setData, post, errors, reset} = useForm({
-    image: '',
+    image_path: '',
     name: '',
     description: '',
+    price: '',
+    delivery_location: '',
+    delivery_time: '',
+    delivery_date: '',
+    customer_name: '',
+    customer_phone_number: '',
+
   })
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    post(route('order.create'))
+    post(route('order.store'))
   }
 
   return (
@@ -47,14 +55,13 @@ export default function Create({auth}) {
 
                 <TextInput
                   id="order_image_path"
-                  name="image"
+                  name="image_path"
                   type="file"
-                  value={data.image}
                   className="mt-1 w-full block"
-                  onChange={(e) => setData('image', e.target.value)}
+                  onChange={(e) => setData('image_path', e.target.files[0])}
                 />
 
-                <InputError message={errors.image} className="mt-2"/>
+                <InputError message={errors.image_path} className="mt-2"/>
               </div>
 
               <div className="mt-4">
@@ -74,6 +81,63 @@ export default function Create({auth}) {
                 />
 
                 <InputError message={errors.name} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="customer_name"
+                  value="Customer Name"
+                />
+
+                <TextInput
+                  id="customer_name"
+                  name="customer_name"
+                  type="text"
+                  value={data.customer_name}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('customer_name', e.target.value)}
+                />
+
+                <InputError message={errors.customer_name} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="customer_phone_number"
+                  value="Customer Phone Number"
+                />
+
+                <TextInput
+                  id="customer_phone_number"
+                  name="customer_phone_number"
+                  type="text"
+                  value={data.customer_phone_number}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('customer_phone_number', e.target.value)}
+                />
+
+                <InputError message={errors.customer_phone_number} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="order_description"
+                  value="Order Description"
+                />
+                <TextAreaInput
+                  id="order_description"
+                  name="description"
+                  value={data.description}
+                  onChange={(e) => setData('description', e.target.value)}
+                >
+                </TextAreaInput>
+
+                <InputError
+                  message={errors.description}
+                  className="mt-2"
+                />
               </div>
 
               <div className="mt-4">
@@ -152,6 +216,12 @@ export default function Create({auth}) {
                 <InputError message={errors.delivery_time} className="mt-2"/>
               </div>
 
+              <button
+                className="mt-6 px-4 py-2 text-white bg-emerald-500 rounded-md hover:bg-emerald-600 uppercase tracking-widest text-xs"
+                type="submit"
+              >
+                Create Order
+              </button>
 
             </form>
           </div>

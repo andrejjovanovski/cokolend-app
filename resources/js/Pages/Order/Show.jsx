@@ -158,7 +158,7 @@ export default function Show({auth, order}) {
 
               <div className="flex justify-between items-center mt-3">
                 <button
-                  className="mt-6 px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 uppercase tracking-widest text-xs"
+                  className="mt-6 px-4 py-2 text-white bg-emerald-500 rounded-md hover:bg-emerald-600 uppercase tracking-widest text-xs"
                   type="submit"
                 >
                   Save

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class OrderResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => new UserResource($this->whenLoaded('user')),
-            'image_path' => $this->image_path,
+            'image_path' => $this->image_path ? Storage::url($this->image_path) : '',
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,

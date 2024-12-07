@@ -5,7 +5,7 @@ import Pagination from "@/Components/Pagination.jsx";
 import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
 
-export default function Index({auth, orders, queryParams = null}) {
+export default function Index({auth, orders, queryParams = null, success}) {
 
   queryParams = queryParams || {}
 
@@ -44,6 +44,10 @@ export default function Index({auth, orders, queryParams = null}) {
     >
 
       <Head title='Orders'/>
+
+      {success && (
+        <div className="bg-emerald-500 py-2 px-4 text-white rounded">{success}</div>
+      )}
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
