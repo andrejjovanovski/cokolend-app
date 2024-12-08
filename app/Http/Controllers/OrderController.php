@@ -6,8 +6,10 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
+use Illuminate\Http\Request;
+
 
 class OrderController extends Controller
 {
@@ -91,7 +93,19 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        $data = $request->validated();
+        /** @var $image \Illuminate\Http\UploadedFile */
+        $image = $data['image_path'] ?? null;
+
+        $data['user_id'] = auth()->id();
+
+        if ($image) {
+            if (Storage::disk('public')->delete($order->image_path));
+            $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
+        }
+        $order->update($data);
+
+        return to_route("order.index")->with("success", "Нарачката е успешно креирана");
     }
 
     /**
@@ -100,5 +114,20 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'production_status' => 'required|string|in:pending,processing,completed',
+        ]);
+
+        // Update the order's production status
+        $order->production_status = $validated['production_status'];
+        $order->save();
+
+        // Return a success response
+        return redirect()->back()->with('success', 'Order status updated successfully!');
     }
 }

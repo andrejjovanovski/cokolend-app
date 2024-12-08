@@ -1,85 +1,95 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import {Head} from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import StatusTag from "@/Components/StatusTag.jsx";
 import PrimaryButton from "@/Components/PrimaryButton.jsx";
 import SecondaryButton from "@/Components/SecondaryButton.jsx";
 import Modal from "@/Components/Modal.jsx";
-import {useState} from "react";
+import { useState } from "react";
 import SelectInput from "@/Components/SelectInput.jsx";
-import {Inertia} from '@inertiajs/inertia';
+import { Inertia } from '@inertiajs/inertia';
 
-export default function Show({auth, order}) {
+export default function Show({ auth, order }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [isDelivered, setIsDelivered] = useState(order.delivered);
+  const [productionStatus, setProductionStatus] = useState(order.production_status); // Initialize with order status
 
+  // Mark as Delivered Handler
   const handleMarkAsDelivered = () => {
-    Inertia.post(route("orders.mark-as-delivered", order.id)), {}, {
-      onSuccess: () => {
-        setIsDelivered(1);
-      },
-      onError: (error) => {
-        console.log(`Error:`, error);
+    Inertia.post(
+      route("orders.mark-as-delivered", order.id),
+      {},
+      {
+        onSuccess: () => {
+          setIsDelivered(true); // Update state to reflect delivery
+        },
+        onError: (error) => {
+          console.error("Error:", error);
+        }
       }
-    };
-  }
+    );
+  };
+
+  // Handle Status Update Submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    Inertia.post(
+      route("order.update-status", order.id),
+      { production_status: productionStatus },
+      {
+        onSuccess: () => {
+          setIsModalOpen(false);
+        },
+        onError: (error) => {
+          console.error('Error:', error);
+        },
+      }
+    );
+  };
 
   return (
     <AuthenticatedLayout
       user={auth.user}
       header={
         <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-          {`Order: ${order.name}`}
+          {`Нарачка: ${order.name}`}
         </h2>
       }
     >
-
-      <Head title={`Order "${order.name}"`}/>
+      <Head title={`Order "${order.name}"`} />
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <div className="pb-5 border-b border-gray-500">
-                <img src={order.image_path} alt="" className="w-full object-cover h-[550px]"/>
+                <img src={order.image_path} alt="" className="mx-auto object-cover h-[550px] bg-center bg-cover" />
               </div>
               <div className="grid gap-1 grid-cols-2 mt-5">
                 {/*LEFT COL*/}
                 <div>
                   <div>
-                    <label className="font-bold text-lg">Order ID</label>
+                    <label className="font-bold text-lg">Број на нарачка</label>
                     <p className="mt-1">{order.id}</p>
                   </div>
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Order Name</label>
+                    <label className="font-bold text-lg">Име на нарачка</label>
                     <p className="mt-1">{order.name}</p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Order Price</label>
+                    <label className="font-bold text-lg">Цена на нарачка</label>
                     <p className="mt-1">{order.price} MKD</p>
-                  </div>
-                  <div className="mt-4 flex items-center">
-                    <div className="">
-                      <label className="font-bold text-lg">Order Price</label>
-                      <p className="mt-1">{order.price} MKD</p>
-                    </div>
-                    <div className="content-center">
-                      <label className="font-bold text-lg">Order Price</label>
-                      <p className="mt-1">{order.price} MKD</p>
-                    </div>
-
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Order Status</label>
+                    <label className="font-bold text-lg">Статус на нарачка</label>
                     <p className="mt-1">
-                      <StatusTag orderStatus={order.production_status}/>
+                      <StatusTag orderStatus={order.production_status} />
                     </p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Created by</label>
+                    <label className="font-bold text-lg">Креирана од</label>
                     <p className="mt-1">{order.user_id.name}</p>
                   </div>
                 </div>
@@ -87,45 +97,44 @@ export default function Show({auth, order}) {
                 {/*RIGHT COL*/}
                 <div>
                   <div>
-                    <label className="font-bold text-lg">Order Description</label>
+                    <label className="font-bold text-lg">Опис на нарачка</label>
                     <p className="mt-1">{order.description}</p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Delivery Location</label>
+                    <label className="font-bold text-lg">Локација за испорака</label>
                     <p className="mt-1">{order.delivery_location}</p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Delivery date</label>
-                    <p className="mt-1">{order.delivery_date}</p>
+                    <label className="font-bold text-lg">Име на клиентот</label>
+                    <p className="mt-1">{order.customer_name}</p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Delivery time</label>
-                    <p className="mt-1">{order.delivery_time}</p>
+                    <label className="font-bold text-lg">Број на клиентот</label>
+                    <p className="mt-1">{order.customer_phone_number}</p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Is delivered?</label>
-                    <p className="mt-1">{isDelivered ? 'Delivered' : 'Not delivered'}</p>
+                    <label className="font-bold text-lg">Достава</label>
+                    <p className="mt-1">{isDelivered ? 'Доставена' : 'Не е доставена'}</p>
                   </div>
 
                   <div className="mt-4">
                     <div className="flex gap-3 ">
                       <PrimaryButton
-                        children={order.production_status === 'delivered' ? 'Delivered' : 'Mark as delivered'}
+                        children={isDelivered ? 'Доставена' : 'Означи како доставено'}
                         className="w-full justify-center"
-                        disabled={order.production_status !== 'completed'}
+                        disabled={isDelivered || productionStatus !== 'completed'}
                         onClick={handleMarkAsDelivered}
                       />
                       <SecondaryButton
-                        children="Change Status"
+                        children="Промени статус"
                         className="w-full"
-                        disabled={order.production_status === 'delivered'}
+                        disabled={isDelivered}
                         onClick={() => setIsModalOpen(true)}
                       />
-
                     </div>
                   </div>
                 </div>
@@ -140,20 +149,19 @@ export default function Show({auth, order}) {
         maxWidth="lg"
         onClose={() => setIsModalOpen(false)}
       >
-        <div className="p-6">
-          <h2 className="text-xl font-bold">Change production status</h2>
-          <div className={"mt-3"}>
-            <form action="" className="">
+      <div className="p-6">
+          <h2 className="text-xl font-bold">Промени статус на изработка</h2>
+          <div className="mt-3">
+            <form onSubmit={handleSubmit}>
               <SelectInput
                 className="w-full"
-                value={order.production_status}
-                onChange={(e) => handleChange(e.target.value)}
+                value={productionStatus}
+                onChange={(e) => setProductionStatus(e.target.value)} // Update the state
               >
-                <option value="">Select Status</option>
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="completed">Completed</option>
-
+                <option value="">Избери статус</option>
+                <option value="pending">На чекање</option>
+                <option value="processing">Во изработка</option>
+                <option value="completed">Завршена</option>
               </SelectInput>
 
               <div className="flex justify-between items-center mt-3">
@@ -161,27 +169,23 @@ export default function Show({auth, order}) {
                   className="mt-6 px-4 py-2 text-white bg-emerald-500 rounded-md hover:bg-emerald-600 uppercase tracking-widest text-xs"
                   type="submit"
                 >
-                  Save
+                  Зачувај
                 </button>
 
-                {/* Close Button */}
                 <button
                   className="mt-6 px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 uppercase tracking-widest text-xs"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsModalOpen(false);
-                  }
-                }
-
+                  }}
                 >
-                  Close
+                  Затвори
                 </button>
               </div>
             </form>
           </div>
-
         </div>
       </Modal>
     </AuthenticatedLayout>
-  )
+  );
 }

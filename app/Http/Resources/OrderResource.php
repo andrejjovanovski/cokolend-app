@@ -29,6 +29,8 @@ class OrderResource extends JsonResource
             'delivery_time' => $this->delivery_time,
             'delivered' => $this->delivered,
             'created_at' => $this->created_at,
+            'customer_name' => $this->customer_name,
+            'customer_phone_number' => $this->customer_phone_number,
         ];
     }
 }

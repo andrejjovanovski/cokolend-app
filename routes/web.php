@@ -4,7 +4,6 @@ use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('user', UserController::class);
 
     Route::post('/orders/{order}/mark-as-delivered', [DeliveryController::class, 'markAsDelivered'])->name('orders.mark-as-delivered');
+    Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('order.update-status');
 
 
 });

@@ -1,14 +1,16 @@
 import SecondaryButton from "@/Components/SecondaryButton.jsx";
 import StatusTag from "@/Components/StatusTag.jsx";
 
-export default function Card({ image, title, status, description, buttonText = "Details", toRoute }) {
+export default function Card({ image, title, status, description, date, buttonText = "Види повеќе", toRoute }) {
+
   return (
     <div
       className="relative flex flex-col my-6 bg-white shadow-sm border border-slate-200 rounded-lg w-96">
-      <div className="relative h-56 m-2.5 overflow-hidden text-white rounded-md">
+      <div className="relative m-2.5 h-[350px] overflow-hidden text-white rounded-md">
         <img
+          className="w-full h-auto object-contain"
           src={image}
-          alt={title} />
+          alt={title}/>
       </div>
       <div className="px-4">
         <StatusTag
@@ -16,20 +18,21 @@ export default function Card({ image, title, status, description, buttonText = "
         />
       </div>
       <div className="p-4 pt-1">
-
         <h6 className="mb-2 text-slate-800 text-xl font-semibold">
           {title}
         </h6>
         <p className="text-slate-600 leading-normal font-light h-[100px]">
           {description}
         </p>
+        <p className=" font-extrabold text-xl text-red-500 leading-normal">
+          За ден:<br/>
+          {date}
+        </p>
       </div>
       <div className="px-4 pb-4 pt-0 mt-7 flex justify-center items-center">
-
-        <SecondaryButton href={toRoute}>
+      <SecondaryButton href={toRoute}>
           {buttonText}
         </SecondaryButton>
-
       </div>
     </div>
   );

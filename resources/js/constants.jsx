@@ -5,10 +5,10 @@ export const ORDER_STATUS_CLASS_MAP = {
   delivered: "bg-gray-500",
 };
 export const ORDER_STATUS_TEXT_MAP = {
-  pending: "Pending",
-  processing: "Processing",
-  completed: "Completed",
-  delivered: "Delivered",
+  pending: "На чекање",
+  processing: "Во изработка",
+  completed: "Завршена",
+  delivered: "Доставена",
 };
 export const TASK_STATUS_CLASS_MAP = {
   pending: "bg-amber-500",
