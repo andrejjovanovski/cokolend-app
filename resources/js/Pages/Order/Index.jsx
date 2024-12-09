@@ -64,25 +64,39 @@ export default function Index({ auth, orders, queryParams = null, success }) {
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="p-6 text-gray-900 dark:text-gray-100">
+              <div className="flex items-center justify-between flex-col md:flex-row">
+                <div className="mb-2 md:mb-0">
+                  <SelectInput
+                    defaultValue={queryParams.status}
+                    onChange={e => searchFieldChanged('status', e.target.value)}
+                  >
+                    <option value="">Сите</option>
+                    <option value="">Денес</option>
+                    <option value="">7 дена</option>
+                    <option value="">1 месец</option>
+                  </SelectInput>
+                </div>
+                <div className="flex items-center justify-end content-end gap-3">
+                  <TextInput
+                    placeholder="Пребарувај"
+                    defaultValue={queryParams.name}
+                    onBlur={e => searchFieldChanged('name', e.target.value)}
+                    onKeyPress={e => onKeyPress('name', e)}
+                  />
+                  <SelectInput
+                    defaultValue={queryParams.status}
+                    onChange={e => searchFieldChanged('status', e.target.value)}
+                  >
+                    <option value="">Избери статус</option>
+                    <option value="pending">На чекање</option>
+                    <option value="processing">Во изработка</option>
+                    <option value="completed">Завршена</option>
+                    <option value="delivered">Доставена</option>
+                  </SelectInput>
+                </div>
 
-              <div className="flex items-center justify-end content-end gap-3">
-                <TextInput
-                  placeholder="Пребарувај"
-                  defaultValue={queryParams.name}
-                  onBlur={e => searchFieldChanged('name', e.target.value)}
-                  onKeyPress={e => onKeyPress('name', e)}
-                />
-                <SelectInput
-                  defaultValue={queryParams.status}
-                  onChange={e => searchFieldChanged('status', e.target.value)}
-                >
-                  <option value="">Избери статус</option>
-                  <option value="pending">На чекање</option>
-                  <option value="processing">Во изработка</option>
-                  <option value="completed">Завршена</option>
-                  <option value="delivered">Доставена</option>
-                </SelectInput>
               </div>
+
 
               <div className="flex items-center justify-around flex-wrap">
                 {orders.data.map((order) => (
@@ -99,7 +113,7 @@ export default function Index({ auth, orders, queryParams = null, success }) {
 
               </div>
 
-              <Pagination links={orders.meta.links} />
+              <Pagination links={orders.meta.links}/>
             </div>
           </div>
         </div>
