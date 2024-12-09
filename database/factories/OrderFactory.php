@@ -27,6 +27,8 @@ class OrderFactory extends Factory
             'delivery_location' => fake()->streetAddress(),
             'delivery_time' => fake()->dateTimeBetween('now', '+1 years')->format('H:i'),
             'delivered' => fake()->randomElement([0, 1]),
+            'customer_name' => fake()->name(),
+            'customer_phone_number' => fake()->phoneNumber(),
         ];
     }
 }

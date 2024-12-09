@@ -1,0 +1,234 @@
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
+import {Head, Link, useForm} from "@inertiajs/react";
+import InputLabel from "@/Components/InputLabel.jsx";
+import TextInput from "@/Components/TextInput.jsx";
+import InputError from "@/Components/InputError.jsx";
+import TextAreaInput from "@/Components/TextAreaInput.jsx";
+
+export default function Create({auth}) {
+
+  const {data, setData, post, errors, reset} = useForm({
+    image_path: '',
+    name: '',
+    description: '',
+    price: '',
+    delivery_location: '',
+    delivery_time: '',
+    delivery_date: '',
+    customer_name: '',
+    customer_phone_number: '',
+
+  })
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    post(route('order.store'))
+  }
+
+  return (
+    <AuthenticatedLayout
+      user={auth.user}
+      header={
+        <div className="flex items-center justify-between w-full">
+          <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+            Create a new order
+          </h2>
+        </div>
+      }
+    >
+
+      <Head title='Orders'/>
+
+      <div className="py-12">
+        <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
+          <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+            <form
+              onSubmit={onSubmit}
+              className="p-4 sm:p-8 bg-white dark:bg-dark:800 shadow sm:rounded-lg"
+            >
+              <div>
+                <InputLabel
+                  htmlFor="order_image_path"
+                  value="Order Image"
+                />
+
+                <TextInput
+                  id="order_image_path"
+                  name="image_path"
+                  type="file"
+                  className="mt-1 w-full block"
+                  onChange={(e) => setData('image_path', e.target.files[0])}
+                />
+
+                <InputError message={errors.image_path} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="order_name"
+                  value="Order Name"
+                />
+
+                <TextInput
+                  id="order_name"
+                  name="name"
+                  type="text"
+                  value={data.name}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('name', e.target.value)}
+                />
+
+                <InputError message={errors.name} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="customer_name"
+                  value="Customer Name"
+                />
+
+                <TextInput
+                  id="customer_name"
+                  name="customer_name"
+                  type="text"
+                  value={data.customer_name}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('customer_name', e.target.value)}
+                />
+
+                <InputError message={errors.customer_name} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="customer_phone_number"
+                  value="Customer Phone Number"
+                />
+
+                <TextInput
+                  id="customer_phone_number"
+                  name="customer_phone_number"
+                  type="text"
+                  value={data.customer_phone_number}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('customer_phone_number', e.target.value)}
+                />
+
+                <InputError message={errors.customer_phone_number} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="order_description"
+                  value="Order Description"
+                />
+                <TextAreaInput
+                  id="order_description"
+                  name="description"
+                  value={data.description}
+                  onChange={(e) => setData('description', e.target.value)}
+                >
+                </TextAreaInput>
+
+                <InputError
+                  message={errors.description}
+                  className="mt-2"
+                />
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="order_price"
+                  value="Order Price"
+                />
+
+                <TextInput
+                  id="order_price"
+                  name="price"
+                  type="number"
+                  value={data.price}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('price', e.target.value)}
+                />
+
+                <InputError message={errors.price} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="delivery_location"
+                  value="Delivery Location"
+                />
+
+                <TextInput
+                  id="delivery_location"
+                  name="delivery_location"
+                  type="text"
+                  value={data.delivery_location}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('delivery_location', e.target.value)}
+                />
+
+                <InputError message={errors.delivery_location} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="delivery_date"
+                  value="Delivery Date"
+                />
+
+                <TextInput
+                  id="delivery_date"
+                  name="delivery_date"
+                  type="date"
+                  value={data.delivery_date}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('delivery_date', e.target.value)}
+                />
+
+                <InputError message={errors.delivery_date} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel
+                  htmlFor="delivery_time"
+                  value="Delivery Time"
+                />
+
+                <TextInput
+                  id="delivery_time"
+                  name="delivery_time"
+                  type="time"
+                  value={data.delivery_time}
+                  className="mt-1 w-full block"
+                  isFocused={true}
+                  onChange={(e) => setData('delivery_time', e.target.value)}
+                />
+
+                <InputError message={errors.delivery_time} className="mt-2"/>
+              </div>
+
+              <button
+                className="mt-6 px-4 py-2 text-white bg-emerald-500 rounded-md hover:bg-emerald-600 uppercase tracking-widest text-xs"
+                type="submit"
+              >
+                Create Order
+              </button>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+    </AuthenticatedLayout>
+  )
+}

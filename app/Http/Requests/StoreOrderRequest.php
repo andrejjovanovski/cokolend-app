@@ -11,7 +11,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,16 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'image_path' => 'required|image',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'delivery_location' => 'required|string|max:255',
+            'delivery_date' => 'required|date',
+            'delivery_time' => 'required|date_format:H:i',
+            'customer_name' => 'required|string|max:255',
+            'customer_phone_number' => 'required|string|max:255',
+
         ];
     }
 }

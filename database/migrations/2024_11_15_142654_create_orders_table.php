@@ -19,11 +19,13 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('price');
-            $table->enum('production_status', ['pending', 'processing', 'completed', 'delivered']);
+            $table->enum('production_status', ['pending', 'processing', 'completed', 'delivered'])->default('pending');
             $table->string('delivery_location');
             $table->date('delivery_date');
             $table->time('delivery_time');
-            $table->boolean('delivered');
+            $table->boolean('delivered')->default(false);
+            $table->string('customer_name');
+            $table->string('customer_phone_number');
             $table->timestamps();
         });
     }

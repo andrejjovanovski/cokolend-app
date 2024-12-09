@@ -19,7 +19,7 @@ export default function AuthenticatedLayout({header, children}) {
             <div className="flex">
               <div className="flex shrink-0 items-center">
                 <Link href="/">
-                  <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"/>
+                  <h2 className="uppercase font-bold text-xl text-[#7F5026]">Чоколенд</h2>
                 </Link>
               </div>
 
@@ -28,22 +28,22 @@ export default function AuthenticatedLayout({header, children}) {
                   href={route('dashboard')}
                   active={route().current('dashboard')}
                 >
-                  Dashboard
+                  Контролна
                 </NavLink>
 
                 <NavLink
                   href={route('order.index')}
                   active={route().current('order.index')}
                 >
-                  Orders
+                  Нарачки
                 </NavLink>
 
-                <NavLink
-                  href={route('user.index')}
-                  active={route().current('user.index')}
-                >
-                  Users
-                </NavLink>
+                {/*<NavLink*/}
+                {/*  href={route('user.index')}*/}
+                {/*  active={route().current('user.index')}*/}
+                {/*>*/}
+                {/*  Users*/}
+                {/*</NavLink>*/}
               </div>
             </div>
 
@@ -78,14 +78,14 @@ export default function AuthenticatedLayout({header, children}) {
                     <Dropdown.Link
                       href={route('profile.edit')}
                     >
-                      Profile
+                      Профил
                     </Dropdown.Link>
                     <Dropdown.Link
                       href={route('logout')}
                       method="post"
                       as="button"
                     >
-                      Log Out
+                      Одјави се
                     </Dropdown.Link>
                   </Dropdown.Content>
                 </Dropdown>

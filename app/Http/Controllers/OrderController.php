@@ -6,7 +6,10 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+
 
 class OrderController extends Controller
 {
@@ -18,15 +21,13 @@ class OrderController extends Controller
 
         // $orders = Order::with('user')->paginate(9)->onEachSide(1);
 
-        $query = Order::query()->with('user');
+        $query = Order::query()->with('user')->latest();
 
         if (request('name')) {
-            // $orders = Order::with('user')->where('name', 'like', '%' . request('name') . '%')->paginate(9)->onEachSide(1);
             $query->where('name', 'like', '%' . request('name') . '%');
         }
 
         if (request('status')) {
-            // $orders = Order::with('user')->where('production_status', request('status'))->paginate(9)->onEachSide(1);
             $query->where('production_status', request('status'));
         }
 
@@ -35,6 +36,7 @@ class OrderController extends Controller
         return inertia("Order/Index", [
             'orders' => OrderResource::collection($orders),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
         ]);
     }
 
@@ -43,7 +45,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        return inertia("Order/Create",);
     }
 
     /**
@@ -51,7 +53,19 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        $data = $request->validated();
+        /** @var $image \Illuminate\Http\UploadedFile */
+        $image = $data['image_path'] ?? null;
+
+        $data['user_id'] = auth()->id();
+
+        if ($image) {
+            $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
+        }
+
+        Order::create($data);
+
+        return to_route("order.index")->with("success", "Order created successfully");
     }
 
     /**
@@ -79,7 +93,19 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        $data = $request->validated();
+        /** @var $image \Illuminate\Http\UploadedFile */
+        $image = $data['image_path'] ?? null;
+
+        $data['user_id'] = auth()->id();
+
+        if ($image) {
+            if (Storage::disk('public')->delete($order->image_path));
+            $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
+        }
+        $order->update($data);
+
+        return to_route("order.index")->with("success", "Нарачката е успешно креирана");
     }
 
     /**
@@ -88,5 +114,20 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'production_status' => 'required|string|in:pending,processing,completed',
+        ]);
+
+        // Update the order's production status
+        $order->production_status = $validated['production_status'];
+        $order->save();
+
+        // Return a success response
+        return redirect()->back()->with('success', 'Order status updated successfully!');
     }
 }
