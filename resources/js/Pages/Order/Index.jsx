@@ -67,13 +67,13 @@ export default function Index({ auth, orders, queryParams = null, success }) {
               <div className="flex items-center justify-between flex-col md:flex-row">
                 <div className="mb-2 md:mb-0">
                   <SelectInput
-                    defaultValue={queryParams.status}
-                    onChange={e => searchFieldChanged('status', e.target.value)}
+                    defaultValue={queryParams.timeline}
+                    onChange={e => searchFieldChanged('timeline', e.target.value)}
                   >
                     <option value="">Сите</option>
-                    <option value="">Денес</option>
-                    <option value="">7 дена</option>
-                    <option value="">1 месец</option>
+                    <option value="today">Денес</option>
+                    <option value="7">7 дена</option>
+                    <option value="30">1 месец</option>
                   </SelectInput>
                 </div>
                 <div className="flex items-center justify-end content-end gap-3">
@@ -98,7 +98,7 @@ export default function Index({ auth, orders, queryParams = null, success }) {
               </div>
 
 
-              <div className="flex items-center justify-around flex-wrap">
+              <div className="flex items-center justify-around flex-wrap z-10">
                 {orders.data.map((order) => (
                   <Card
                     key={order.id}

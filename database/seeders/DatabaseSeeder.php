@@ -17,10 +17,15 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Andrej',
-            'email' => 'andrej@cokolend.com',
+            'email' => 'andrej@cokolend.mk',
             'password' => bcrypt('andrej'),
         ]);
 
-        Order::factory()->count(50)->create();
+        User::factory()->create([
+            'name' => 'Дуќан',
+            'email' => 'dukjan@cokolend.com',
+            'password' => bcrypt('cokolend2024'),
+        ]);
+
     }
 }

@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {Head, Link} from '@inertiajs/react';
 
-export default function Dashboard() {
+export default function Dashboard({stats}) {
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString('mk-MK', {
@@ -15,7 +15,7 @@ export default function Dashboard() {
     <AuthenticatedLayout
       header={
         <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-          Контролна таблави
+          Контролна табла
         </h2>
       }
     >
@@ -48,30 +48,30 @@ export default function Dashboard() {
                   <div className="w-full md:pe-3 md:border-e md:border-e-[#7F5026] h-full ">
                     <div className="flex  justify-between mt-1">
                       <p className="tracking-wider">На чекање:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">5</p>
+                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.pendingOrders}</p>
                     </div>
                     <div className="flex  justify-between mt-1">
                       <p className="tracking-wider">Во изработка:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">5</p>
+                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.inProgressOrders}</p>
                     </div>
                     <div className="flex  justify-between mt-1">
                       <p className="tracking-wider">Завршени:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">5</p>
+                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.completedOrders}</p>
                     </div>
                   </div>
 
                   <div className="w-full">
                     <div className="flex  justify-between mt-1">
                       <p className="tracking-wider">Нарачки:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">5</p>
+                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersTodayRemote}</p>
                     </div>
                     <div className="flex  justify-between mt-1">
                       <p className="tracking-wider">Нарачки (дуќан):</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">5</p>
+                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersTodayShop}</p>
                     </div>
                     <div className="flex  justify-between mt-1">
                       <p className="tracking-wider">Вкупно нарачки:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">5</p>
+                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.allOrders}</p>
                     </div>
                   </div>
 
@@ -85,7 +85,7 @@ export default function Dashboard() {
                 <h2 className="border-b-2 border-[#7F5026] uppercase tracking-widest text-sm">Достава</h2>
                 <div className="flex items-center justify-between mt-1">
                   <p className="tracking-wider">За достава денес:<span><br/>({formattedDate})</span></p>
-                  <p className="tracking-wider bg-gray-300 px-1 rounded-md">5</p>
+                  <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.forDelivery}</p>
                 </div>
               </div>
             </div>

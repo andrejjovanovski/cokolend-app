@@ -6,6 +6,7 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -31,6 +32,14 @@ class OrderController extends Controller
             $query->where('production_status', request('status'));
         }
 
+        if (request('timeline')) {
+            if (request('timeline') == 'today') {
+                $query->whereDate('delivery_date', Carbon::now());
+            } else {
+                $query->whereBetween('delivery_date', [Carbon::now(), Carbon::now()->addDays((int)request('timeline'))]);
+            }
+        }
+
         $orders = $query->paginate(9)->onEachSide(1);
 
         return inertia("Order/Index", [
@@ -45,7 +54,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        return inertia("Order/Create",);
+        return inertia("Order/Create");
     }
 
     /**
@@ -100,7 +109,7 @@ class OrderController extends Controller
         $data['user_id'] = auth()->id();
 
         if ($image) {
-            if (Storage::disk('public')->delete($order->image_path));
+            if (Storage::disk('public')->delete($order->image_path)) ;
             $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
         }
         $order->update($data);
