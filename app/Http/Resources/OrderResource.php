@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -25,10 +26,10 @@ class OrderResource extends JsonResource
             'price' => $this->price,
             'production_status' => $this->production_status,
             'delivery_location' => $this->delivery_location,
-            'delivery_date' => $this->delivery_date,
+            'delivery_date' => $this->delivery_date ? Carbon::parse($this->delivery_date)->format('d-m-Y') : null,
             'delivery_time' => $this->delivery_time,
             'delivered' => $this->delivered,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d-m-Y H:i:s') : null,
             'customer_name' => $this->customer_name,
             'customer_phone_number' => $this->customer_phone_number,
         ];

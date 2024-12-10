@@ -4,6 +4,7 @@ import InputLabel from "@/Components/InputLabel.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import InputError from "@/Components/InputError.jsx";
 import TextAreaInput from "@/Components/TextAreaInput.jsx";
+import Checkbox from "@/Components/Checkbox.jsx";
 
 export default function Create({auth}) {
 
@@ -13,11 +14,11 @@ export default function Create({auth}) {
     description: '',
     price: '',
     delivery_location: '',
+    delivery_location_custom: '',
     delivery_time: '',
     delivery_date: '',
     customer_name: '',
     customer_phone_number: '',
-
   })
 
   const onSubmit = (e) => {
@@ -32,13 +33,13 @@ export default function Create({auth}) {
       header={
         <div className="flex items-center justify-between w-full">
           <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-            Create a new order
+            Креирај нова нарачка
           </h2>
         </div>
       }
     >
 
-      <Head title='Orders'/>
+      <Head title='Нова нарачка'/>
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
@@ -50,7 +51,7 @@ export default function Create({auth}) {
               <div>
                 <InputLabel
                   htmlFor="order_image_path"
-                  value="Order Image"
+                  value="Слика"
                 />
 
                 <TextInput
@@ -67,7 +68,7 @@ export default function Create({auth}) {
               <div className="mt-4">
                 <InputLabel
                   htmlFor="order_name"
-                  value="Order Name"
+                  value="Име на нарачка"
                 />
 
                 <TextInput
@@ -86,7 +87,7 @@ export default function Create({auth}) {
               <div className="mt-4">
                 <InputLabel
                   htmlFor="customer_name"
-                  value="Customer Name"
+                  value="Име на купувач"
                 />
 
                 <TextInput
@@ -105,7 +106,7 @@ export default function Create({auth}) {
               <div className="mt-4">
                 <InputLabel
                   htmlFor="customer_phone_number"
-                  value="Customer Phone Number"
+                  value="Телефонски број на купувач"
                 />
 
                 <TextInput
@@ -124,7 +125,7 @@ export default function Create({auth}) {
               <div className="mt-4">
                 <InputLabel
                   htmlFor="order_description"
-                  value="Order Description"
+                  value="Опис на нарачка"
                 />
                 <TextAreaInput
                   id="order_description"
@@ -143,7 +144,7 @@ export default function Create({auth}) {
               <div className="mt-4">
                 <InputLabel
                   htmlFor="order_price"
-                  value="Order Price"
+                  value="Цена"
                 />
 
                 <TextInput
@@ -159,29 +160,68 @@ export default function Create({auth}) {
                 <InputError message={errors.price} className="mt-2"/>
               </div>
 
+
               <div className="mt-4">
-                <InputLabel
-                  htmlFor="delivery_location"
-                  value="Delivery Location"
-                />
+                <p className="mb-1">Локација за достава</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center">
 
-                <TextInput
-                  id="delivery_location"
-                  name="delivery_location"
-                  type="text"
-                  value={data.delivery_location}
-                  className="mt-1 w-full block"
-                  isFocused={true}
-                  onChange={(e) => setData('delivery_location', e.target.value)}
-                />
+                    <div className="flex items-center me-4">
+                      <TextInput
+                        id="delivery_location_shop"
+                        value="Дуќан"
+                        type="radio"
+                        name="delivery_location_radio"
+                        onChange={() => setData('delivery_location', 'Дуќан')}
+                        className="me-1"
+                        checked={data.delivery_location === 'Дуќан'}
+                      />
+                      <InputLabel
+                        htmlFor="delivery_location_shop"
+                        value="Дуќан"
+                      />
+                    </div>
 
-                <InputError message={errors.delivery_location} className="mt-2"/>
+                    <div className="flex items-center">
+                      <TextInput
+                        id="delivery_location_other"
+                        value="other"
+                        type="radio"
+                        name="delivery_location_radio"
+                        onChange={() => setData('delivery_location', 'other')}
+                        className="me-1"
+                        checked={data.delivery_location === 'other'}
+                      />
+                      <InputLabel
+                        htmlFor="delivery_location_other"
+                        value="Друго"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {data.delivery_location === 'other' && (
+                  <div className="w-full mt-3">
+                    <TextInput
+                      id="delivery_location_custom"
+                      name="delivery_location"
+                      type="text"
+                      value={data.delivery_location_custom || ''}
+                      placeholder="Внесете локација за достава"
+                      className="mt-1 w-full block"
+                      isFocused={true}
+                      onChange={(e) => setData('delivery_location_custom', e.target.value)}
+                    />
+                    <InputError message={errors.delivery_location_custom} className="mt-2"/>
+                  </div>
+                )}
               </div>
+
 
               <div className="mt-4">
                 <InputLabel
                   htmlFor="delivery_date"
-                  value="Delivery Date"
+                  value="Датум на достава"
                 />
 
                 <TextInput
@@ -200,7 +240,7 @@ export default function Create({auth}) {
               <div className="mt-4">
                 <InputLabel
                   htmlFor="delivery_time"
-                  value="Delivery Time"
+                  value="Време за достава"
                 />
 
                 <TextInput
@@ -217,10 +257,10 @@ export default function Create({auth}) {
               </div>
 
               <button
-                className="mt-6 px-4 py-2 text-white bg-emerald-500 rounded-md hover:bg-emerald-600 uppercase tracking-widest text-xs"
+                className="mt-6 px-4 py-2 font-bold text-white bg-emerald-500 rounded-md hover:bg-emerald-600 uppercase tracking-widest text-xs"
                 type="submit"
               >
-                Create Order
+                Зачувај
               </button>
 
             </form>

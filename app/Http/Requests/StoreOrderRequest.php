@@ -27,6 +27,7 @@ class StoreOrderRequest extends FormRequest
             'description' => 'required|string',
             'price' => 'required|numeric',
             'delivery_location' => 'required|string|max:255',
+            'delivery_location_custom' => 'nullable|string|max:255',
             'delivery_date' => 'required|date',
             'delivery_time' => 'required|date_format:H:i',
             'customer_name' => 'required|string|max:255',

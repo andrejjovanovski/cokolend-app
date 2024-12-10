@@ -19,13 +19,12 @@ export default function Dashboard({stats}) {
         </h2>
       }
     >
-      <Head title="Dashboard"/>
+      <Head title="Контролна"/>
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] px-6 lg:px-8">
           <div className="overflow-hidden">
             <div className="w-full grid grid-cols-1 sm:grid-cols-4 gap-4">
-
 
               <div
                 className="flex items-center justify-center flex-col p-6 col-span-1 text-gray-900 dark:text-gray-100 bg-white rounded-md shadow-md sm:rounded-lg">
@@ -44,7 +43,7 @@ export default function Dashboard({stats}) {
                   <h2 className="uppercase tracking-widest text-sm">{formattedDate}</h2>
                 </div>
 
-                <div className="flex items-center flex-col justify-between mt-2 gap-4 md:flex-row">
+                  <div className="flex items-center flex-col justify-between mt-2 gap-4 md:flex-row">
                   <div className="w-full md:pe-3 md:border-e md:border-e-[#7F5026] h-full ">
                     <div className="flex  justify-between mt-1">
                       <p className="tracking-wider">На чекање:</p>
