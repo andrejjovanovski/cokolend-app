@@ -54,7 +54,7 @@ export default function Index({ auth, orders, queryParams = null, success }) {
         </div>
       }
     >
-      <Head title="Orders" />
+      <Head title="Нарачки" />
 
       {successMessage && (
         <div className="bg-emerald-500 py-2 px-4 text-white rounded">{successMessage}</div>

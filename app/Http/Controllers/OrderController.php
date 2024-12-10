@@ -62,6 +62,7 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
+
         $data = $request->validated();
         /** @var $image \Illuminate\Http\UploadedFile */
         $image = $data['image_path'] ?? null;
@@ -70,6 +71,10 @@ class OrderController extends Controller
 
         if ($image) {
             $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
+        }
+
+        if ($data['delivery_location_custom'] != null) {
+            $data['delivery_location'] = $data['delivery_location_custom'];
         }
 
         Order::create($data);

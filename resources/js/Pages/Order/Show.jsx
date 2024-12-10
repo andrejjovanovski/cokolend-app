@@ -55,7 +55,7 @@ export default function Show({ auth, order }) {
         </h2>
       }
     >
-      <Head title={`Order "${order.name}"`} />
+      <Head title={`Нарачка: "${order.name}"`} />
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
