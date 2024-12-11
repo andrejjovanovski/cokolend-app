@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import {Head, router} from "@inertiajs/react";
 import StatusTag from "@/Components/StatusTag.jsx";
 import PrimaryButton from "@/Components/PrimaryButton.jsx";
 import SecondaryButton from "@/Components/SecondaryButton.jsx";
@@ -7,6 +7,9 @@ import Modal from "@/Components/Modal.jsx";
 import { useState } from "react";
 import SelectInput from "@/Components/SelectInput.jsx";
 import { Inertia } from '@inertiajs/inertia';
+import { MdDeleteOutline } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+
 
 export default function Show({ auth, order }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,16 +49,39 @@ export default function Show({ auth, order }) {
     );
   };
 
+  // DELETE ORDER
+  const deleteOrder = (order) => {
+    if (!window.confirm("Дали сте сигурни дека сакате да ја избришете нарачката?")) {
+      return;
+    }
+    router.delete(route("order.destroy", order.id));
+  }
+
   return (
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-          {`Нарачка: ${order.name}`}
-        </h2>
+        <div className="flex items-center justify-between w-full">
+          <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+            {`Нарачка: ${order.name}`}
+          </h2>
+          <div className="flex items-center">
+            <button className="h-6 w-6 bg-orange-500 text-white border border-red-400 dark:border-red-500 rounded me-3">
+              <MdEdit />
+            </button>
+            <button
+              onClick={(e) => deleteOrder(order)}
+              className=""
+            >
+              <MdDeleteOutline
+                className="h-6 w-6 bg-red-500 text-white border border-red-400 dark:border-red-500 rounded"/>
+            </button>
+          </div>
+        </div>
+
       }
     >
-      <Head title={`Нарачка: "${order.name}"`} />
+      <Head title={`Нарачка: "${order.name}"`}/>
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
