@@ -127,7 +127,10 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $name = $order->name;
+        $order->delete();
+
+        return to_route('order.index')->with('success', 'Нарачката ' . $name . ' е успешно избришана!');
     }
 
     public function updateStatus(Request $request, Order $order)
