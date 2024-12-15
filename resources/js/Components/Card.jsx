@@ -2,7 +2,7 @@ import SecondaryButton from "@/Components/SecondaryButton.jsx";
 import StatusTag from "@/Components/StatusTag.jsx";
 import {Link} from "@inertiajs/react";
 
-export default function Card({ image, title, status, description, date, buttonText = "Види повеќе", toRoute }) {
+export default function Card({ image, title, status, description, date, deliveryLocation, deliveryLocationCustom, buttonText = "Види повеќе", toRoute }) {
 
   return (
     <div
@@ -25,14 +25,20 @@ export default function Card({ image, title, status, description, date, buttonTe
         <p className="text-slate-600 leading-normal font-light h-[100px]">
           {description}
         </p>
-        <p className=" font-extrabold text-xl text-red-500 leading-normal">
-          За ден:<br/>
-          {date}
-        </p>
+        <div className="flex justify-between items-center">
+          <p className=" font-extrabold text-xl text-red-500 leading-normal">
+            За ден:<br/>
+            {date}
+          </p>
+          <p className="leading-normal text-right leading-normal">
+            Локација за испорака:<br/>
+            {deliveryLocation === 'other' ? deliveryLocationCustom : deliveryLocation}
+          </p>
+        </div>
       </div>
       <div className="px-4 pb-4 pt-0 mt-7 flex justify-center items-center">
-      <Link
-        className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800"
+        <Link
+          className="inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800"
         href={toRoute}
       >
           {buttonText}
