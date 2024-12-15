@@ -146,22 +146,22 @@ export default function AuthenticatedLayout({header, children}) {
               href={route('dashboard')}
               active={route().current('dashboard')}
             >
-              Dashboard
+              Контролна
             </ResponsiveNavLink>
 
             <ResponsiveNavLink
               href={route('order.index')}
               active={route().current('order.index')}
             >
-              Orders
+              Нарачки
             </ResponsiveNavLink>
 
-            <ResponsiveNavLink
-              href={route('user.index')}
-              active={route().current('user.index')}
-            >
-              Users
-            </ResponsiveNavLink>
+            {/*<ResponsiveNavLink*/}
+            {/*  href={route('user.index')}*/}
+            {/*  active={route().current('user.index')}*/}
+            {/*>*/}
+            {/*  Users*/}
+            {/*</ResponsiveNavLink>*/}
           </div>
 
           <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
@@ -176,14 +176,14 @@ export default function AuthenticatedLayout({header, children}) {
 
             <div className="mt-3 space-y-1">
               <ResponsiveNavLink href={route('profile.edit')}>
-                Profile
+                Профил
               </ResponsiveNavLink>
               <ResponsiveNavLink
                 method="post"
                 href={route('logout')}
                 as="button"
               >
-                Log Out
+                Одјави се
               </ResponsiveNavLink>
             </div>
           </div>

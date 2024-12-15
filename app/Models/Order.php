@@ -19,6 +19,7 @@ class Order extends Model
         'price',
         'production_status',
         'delivery_location',
+        'delivery_location_custom',
         'delivery_date',
         'delivery_time',
         'delivered',

@@ -4,27 +4,27 @@ import InputLabel from "@/Components/InputLabel.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import InputError from "@/Components/InputError.jsx";
 import TextAreaInput from "@/Components/TextAreaInput.jsx";
-import Checkbox from "@/Components/Checkbox.jsx";
 
-export default function Create({auth}) {
+export default function Edit({auth, order}) {
 
   const {data, setData, post, errors, reset} = useForm({
-    image_path: '',
-    name: '',
-    description: '',
-    price: '',
-    delivery_location: '',
-    delivery_location_custom: '',
-    delivery_time: '',
-    delivery_date: '',
-    customer_name: '',
-    customer_phone_number: '',
+    image: '',
+    name: order.name || '',
+    description: order.description || '',
+    price: order.price || '',
+    delivery_location: order.delivery_location || '',
+    delivery_location_custom: order.delivery_location_custom || '',
+    delivery_time: order.delivery_time || '',
+    delivery_date: order.delivery_date || '',
+    customer_name: order.customer_name || '',
+    customer_phone_number: order.customer_phone_number || '',
+    _method: 'PUT'
   })
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    post(route('order.store'))
+    post(route('order.update', order.id))
   }
 
   return (
@@ -33,13 +33,13 @@ export default function Create({auth}) {
       header={
         <div className="flex items-center justify-between w-full">
           <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-            Креирај нова нарачка
+            Измени нарачка
           </h2>
         </div>
       }
     >
 
-      <Head title='Нова нарачка'/>
+      <Head title='Измени нарачка'/>
 
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
@@ -48,6 +48,15 @@ export default function Create({auth}) {
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-dark:800 shadow sm:rounded-lg"
             >
+              {order.image_path && (
+                <div>
+                  <img
+                    src={order.image_path}
+                    alt='order image'
+                    className="w-40"
+                  />
+                </div>
+              )}
               <div>
                 <InputLabel
                   htmlFor="order_image_path"
