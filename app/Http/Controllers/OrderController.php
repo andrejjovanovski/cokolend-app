@@ -84,7 +84,7 @@ class OrderController extends Controller
 
         Order::create($data);
 
-        return to_route("order.index")->with("success", "Нарачката " . $data->name . " е успешно креирана!");
+        return to_route("order.index")->with("success", "Нарачката е успешно креирана!");
     }
 
     /**

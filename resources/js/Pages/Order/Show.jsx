@@ -115,12 +115,12 @@ export default function Show({auth, order}) {
                     <p className="mt-1">{order.price} MKD</p>
                   </div>
 
-                  <div className="mt-4 flex items-center gap-7">
+                  <div className="mt-4 flex flex-col md:flex-row gap-0 items-center md:gap-7 no">
                     <div>
                       <label className="font-bold text-lg">Датум за испорака</label>
                       <p className="mt-1">{order.delivery_date}</p>
                     </div>
-                    <div>
+                    <div className="me-6">
                       <label className="font-bold text-lg">Час за испорака</label>
                       <p className="mt-1">{order.delivery_time}</p>
                     </div>
@@ -167,7 +167,7 @@ export default function Show({auth, order}) {
                     <p className="mt-1">{isDelivered ? 'Доставена' : 'Не е доставена'}</p>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-4 hidden">
                     <div className="flex gap-3 ">
                       <PrimaryButton
                         children={isDelivered ? 'Доставена' : 'Означи како доставено'}
@@ -183,6 +183,23 @@ export default function Show({auth, order}) {
                       />
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div className="mt-4 md:block">
+                <div className="flex gap-3 ">
+                  <PrimaryButton
+                    children={isDelivered ? 'Доставена' : 'Означи како доставено'}
+                    className="w-full justify-center"
+                    disabled={isDelivered || productionStatus !== 'processing'}
+                    onClick={handleMarkAsDelivered}
+                  />
+                  <SecondaryButton
+                    children="Промени статус"
+                    className="w-full"
+                    disabled={isDelivered}
+                    onClick={() => setIsModalOpen(true)}
+                  />
                 </div>
               </div>
             </div>
