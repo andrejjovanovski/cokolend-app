@@ -1,17 +1,17 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import {Head, router} from "@inertiajs/react";
+import {Head, Link, router} from "@inertiajs/react";
 import StatusTag from "@/Components/StatusTag.jsx";
 import PrimaryButton from "@/Components/PrimaryButton.jsx";
 import SecondaryButton from "@/Components/SecondaryButton.jsx";
 import Modal from "@/Components/Modal.jsx";
-import { useState } from "react";
+import {useState} from "react";
 import SelectInput from "@/Components/SelectInput.jsx";
-import { Inertia } from '@inertiajs/inertia';
-import { MdDeleteOutline } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
+import {Inertia} from '@inertiajs/inertia';
+import {MdDeleteOutline} from "react-icons/md";
+import {CiEdit} from "react-icons/ci";
 
 
-export default function Show({ auth, order }) {
+export default function Show({auth, order}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelivered, setIsDelivered] = useState(order.delivered);
   const [productionStatus, setProductionStatus] = useState(order.production_status); // Initialize with order status
@@ -37,7 +37,7 @@ export default function Show({ auth, order }) {
     e.preventDefault();
     Inertia.post(
       route("order.update-status", order.id),
-      { production_status: productionStatus },
+      {production_status: productionStatus},
       {
         onSuccess: () => {
           setIsModalOpen(false);
@@ -57,6 +57,10 @@ export default function Show({ auth, order }) {
     router.delete(route("order.destroy", order.id));
   }
 
+  // ORDER LOCATION
+  const orderLocation = order.delivery_location === 'Дуќан' ? order.delivery_location : order.delivery_location_custom || 'Локација не е наведена!';
+
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -65,16 +69,20 @@ export default function Show({ auth, order }) {
           <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
             {`Нарачка: ${order.name}`}
           </h2>
-          <div className="flex items-center">
-            <button className="h-6 w-6 bg-orange-500 text-white border border-red-400 dark:border-red-500 rounded me-3">
-              <MdEdit />
-            </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href={route("order.edit", order.id)}
+              className="p-1 bg-orange-500 text-white border border-orange-500 dark:border-red-500 rounded shadow hover:bg-orange-600">
+              <CiEdit
+                className="w-5 h-5"
+              />
+
+            </Link>
             <button
               onClick={(e) => deleteOrder(order)}
-              className=""
-            >
+              className="p-1 bg-red-500 text-white border border-red-500 dark:border-red-500 rounded shadow hover:bg-red-600">
               <MdDeleteOutline
-                className="h-6 w-6 bg-red-500 text-white border border-red-400 dark:border-red-500 rounded"/>
+                className="w-5 h-5"/>
             </button>
           </div>
         </div>
@@ -88,7 +96,7 @@ export default function Show({ auth, order }) {
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <div className="pb-5 border-b border-gray-500">
-                <img src={order.image_path} alt="" className="mx-auto object-cover h-[550px] bg-center bg-cover" />
+                <img src={order.image_path} alt="" className="mx-auto object-cover h-[550px] bg-center bg-cover"/>
               </div>
               <div className="grid gap-1 grid-cols-2 mt-5">
                 {/*LEFT COL*/}
@@ -98,7 +106,7 @@ export default function Show({ auth, order }) {
                     <p className="mt-1">{order.id}</p>
                   </div>
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Име на нарачка</label>
+                    <label className="font-bold text-lg">Парчиња и вкус</label>
                     <p className="mt-1">{order.name}</p>
                   </div>
 
@@ -107,16 +115,28 @@ export default function Show({ auth, order }) {
                     <p className="mt-1">{order.price} MKD</p>
                   </div>
 
+                  <div className="mt-4 flex items-center gap-7">
+                    <div>
+                      <label className="font-bold text-lg">Датум за испорака</label>
+                      <p className="mt-1">{order.delivery_date}</p>
+                    </div>
+                    <div>
+                      <label className="font-bold text-lg">Час за испорака</label>
+                      <p className="mt-1">{order.delivery_time}</p>
+                    </div>
+
+                  </div>
+
                   <div className="mt-4">
                     <label className="font-bold text-lg">Статус на нарачка</label>
                     <p className="mt-1">
-                      <StatusTag orderStatus={order.production_status} />
+                      <StatusTag orderStatus={order.production_status}/>
                     </p>
                   </div>
 
                   <div className="mt-4">
                     <label className="font-bold text-lg">Креирана од</label>
-                    <p className="mt-1">{order.user_id.name}</p>
+                    <p className="mt-1">{order.user_id.name}, <i>{order.created_at}</i></p>
                   </div>
                 </div>
 
@@ -129,7 +149,7 @@ export default function Show({ auth, order }) {
 
                   <div className="mt-4">
                     <label className="font-bold text-lg">Локација за испорака</label>
-                    <p className="mt-1">{order.delivery_location}</p>
+                    <p className="mt-1">{orderLocation}</p>
                   </div>
 
                   <div className="mt-4">
@@ -152,7 +172,7 @@ export default function Show({ auth, order }) {
                       <PrimaryButton
                         children={isDelivered ? 'Доставена' : 'Означи како доставено'}
                         className="w-full justify-center"
-                        disabled={isDelivered || productionStatus !== 'completed'}
+                        disabled={isDelivered || productionStatus !== 'processing'}
                         onClick={handleMarkAsDelivered}
                       />
                       <SecondaryButton
@@ -175,7 +195,7 @@ export default function Show({ auth, order }) {
         maxWidth="lg"
         onClose={() => setIsModalOpen(false)}
       >
-      <div className="p-6">
+        <div className="p-6">
           <h2 className="text-xl font-bold">Промени статус на изработка</h2>
           <div className="mt-3">
             <form onSubmit={handleSubmit}>
@@ -186,8 +206,7 @@ export default function Show({ auth, order }) {
               >
                 <option value="">Избери статус</option>
                 <option value="pending">На чекање</option>
-                <option value="processing">Во изработка</option>
-                <option value="completed">Завршена</option>
+                <option value="processing">Прифатена</option>
               </SelectInput>
 
               <div className="flex justify-between items-center mt-3">
