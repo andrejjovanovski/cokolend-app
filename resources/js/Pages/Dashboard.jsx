@@ -69,7 +69,7 @@ export default function Dashboard({stats}) {
                       <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersTodayShop}</p>
                     </div>
                     <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">Вкупно нарачки за денес:</p>
+                      <p className="tracking-wider">Вкупно нови нарачки денес:</p>
                       <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersToday}</p>
                     </div>
                     <div className="flex  justify-between mt-1">

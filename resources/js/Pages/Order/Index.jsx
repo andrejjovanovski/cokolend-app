@@ -65,17 +65,27 @@ export default function Index({ auth, orders, queryParams = null, success }) {
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <div className="flex items-center justify-between flex-col md:flex-row">
-                <div className="mb-2 md:mb-0">
+                <div className="mb-2 md:mb-0 flex items-center gap-3">
                   <SelectInput
                     defaultValue={queryParams.timeline}
                     onChange={e => searchFieldChanged('timeline', e.target.value)}
                   >
                     <option value="">Сите</option>
+                    <option value="newest">Најнови</option>
                     <option value="today">Денес</option>
                     <option value="7">7 дена</option>
                     <option value="30">1 месец</option>
                   </SelectInput>
+
+                  <TextInput
+                    defaultValue={queryParams.delivery_date}
+                    type="date"
+                    className="w-full block"
+                    onChange={e => searchFieldChanged('delivery_date', e.target.value)}
+                  />
                 </div>
+
+
                 <div className="flex items-center justify-end content-end gap-3">
                   <TextInput
                     placeholder="Пребарувај"
@@ -87,17 +97,12 @@ export default function Index({ auth, orders, queryParams = null, success }) {
                     defaultValue={queryParams.status}
                     onChange={e => searchFieldChanged('status', e.target.value)}
                   >
-                    <option value="">Избери статус</option>
+                    <option value="">Сите</option>
                     <option value="pending">На чекање</option>
-                    <option value="processing">Во изработка</option>
-                    <option value="completed">Завршена</option>
-                    <option value="delivered">Доставена</option>
+                    <option value="processing">Прифатена</option>
                   </SelectInput>
                 </div>
-
               </div>
-
-
               <div className="flex items-center justify-around flex-wrap z-10">
                 {orders.data.map((order) => (
                   <Card
@@ -112,9 +117,7 @@ export default function Index({ auth, orders, queryParams = null, success }) {
                     toRoute={route("order.show", order.id)}
                   />
                 ))}
-
               </div>
-
               <Pagination links={orders.meta.links}/>
             </div>
           </div>

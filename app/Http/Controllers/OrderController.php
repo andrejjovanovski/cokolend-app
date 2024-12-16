@@ -20,9 +20,16 @@ class OrderController extends Controller
     public function index()
     {
         if (!request('timeline')) {
-            $query = Order::query()->with('user')->orderBy('delivery_date', 'asc');
+            $query = Order::query()->with('user')
+                ->where('production_status', '!=','delivered')
+                ->orderBy('delivery_date', 'asc');
         } else {
-            $query = Order::query()->with('user');
+            $query = Order::query()->with('user')
+                ->where('production_status', '!=','delivered');
+        }
+
+        if (request('delivery_date')) {
+            $query->where('delivery_date', '=', Carbon::parse(request('delivery_date')));
         }
 
         if (request('name')) {
@@ -34,7 +41,9 @@ class OrderController extends Controller
         }
 
         if (request('timeline')) {
-            if (request('timeline') == 'today') {
+            if (request('timeline') == 'newest') {
+                $query->whereDate('created_at', Carbon::now());
+            } else if (request('timeline') == 'today') {
                 $query->whereDate('delivery_date', Carbon::now());
             } else {
                 $query->whereBetween('delivery_date', [Carbon::now()->subDay(), Carbon::now()->addDays((int)request('timeline'))]);

@@ -30,6 +30,7 @@ class UpdateOrderRequest extends FormRequest
             'price' => 'required|numeric',
 //            'production_status' => 'required|string', Rule::in('pending', 'processing', 'completed', 'delivered'),
             'delivery_location' => 'required|string|max:255',
+            'delivery_location_custom' => 'nullable|string|max:255',
             'delivery_date' => 'required|date',
             'delivery_time' => 'required|date_format:H:i',
             'customer_name' => 'required|string|max:255',
