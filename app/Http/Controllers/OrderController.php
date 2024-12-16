@@ -19,10 +19,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-
-        // $orders = Order::with('user')->paginate(9)->onEachSide(1);
-
-        $query = Order::query()->with('user')->latest();
+        if (!request('timeline')) {
+            $query = Order::query()->with('user')
+                ->where('production_status', '!=','delivered')
+                ->orderBy('delivery_date', 'asc');
+        } else {
+            $query = Order::query()->with('user');
+        }
 
         if (request('name')) {
             $query->where('name', 'like', '%' . request('name') . '%');
@@ -36,11 +39,18 @@ class OrderController extends Controller
             if (request('timeline') == 'today') {
                 $query->whereDate('delivery_date', Carbon::now());
             } else {
-                $query->whereBetween('delivery_date', [Carbon::now(), Carbon::now()->addDays((int)request('timeline'))]);
+                $query->whereBetween('delivery_date', [Carbon::now()->subDay(), Carbon::now()->addDays((int)request('timeline'))]);
+                $query->orderBy('delivery_date', 'asc');
             }
         }
 
         $orders = $query->paginate(9)->onEachSide(1);
+
+        $ordersCollection = $orders->getCollection()->map(function ($order) {
+            return (new OrderResource($order))->withDateFormat('d-m-Y');
+        });
+
+        $orders->setCollection($ordersCollection);
 
         return inertia("Order/Index", [
             'orders' => OrderResource::collection($orders),
@@ -64,6 +74,7 @@ class OrderController extends Controller
     {
 
         $data = $request->validated();
+
         /** @var $image \Illuminate\Http\UploadedFile */
         $image = $data['image_path'] ?? null;
 
@@ -73,13 +84,9 @@ class OrderController extends Controller
             $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
         }
 
-        if ($data['delivery_location_custom'] != null) {
-            $data['delivery_location'] = $data['delivery_location_custom'];
-        }
-
         Order::create($data);
 
-        return to_route("order.index")->with("success", "Order created successfully");
+        return to_route("order.index")->with("success", "Нарачката е успешно креирана!");
     }
 
     /**
@@ -90,7 +97,7 @@ class OrderController extends Controller
         $order->load("user");
 
         return inertia('Order/Show', [
-            'order' => new OrderResource($order)
+            'order' => (new OrderResource($order))->withDateFormat('d-m-Y')
         ]);
     }
 
@@ -99,7 +106,14 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        $orderResource = new OrderResource($order);
+
+        $orderResource['delivery_date'] = Carbon::parse($orderResource['delivery_date'])->format('Y-m-d');
+
+
+        return inertia('Order/Edit', [
+            'order' => $orderResource
+        ]);
     }
 
     /**
@@ -107,19 +121,21 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
+//        dd($request->validated());
         $data = $request->validated();
-        /** @var $image \Illuminate\Http\UploadedFile */
-        $image = $data['image_path'] ?? null;
+        $image = $data['image'] ?? null;
 
-        $data['user_id'] = auth()->id();
+
 
         if ($image) {
-            if (Storage::disk('public')->delete($order->image_path)) ;
+            if ($order->image_path) {
+                Storage::disk('public')->deleteDirectory(dirname($order->image_path));
+            }
             $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
         }
         $order->update($data);
 
-        return to_route("order.index")->with("success", "Нарачката е успешно креирана");
+        return to_route("order.index")->with("success", "Нарачката " . $order->name . " е успешно изменета!");
     }
 
     /**
@@ -129,6 +145,10 @@ class OrderController extends Controller
     {
         $name = $order->name;
         $order->delete();
+        if ($order->image_path) {
+            Storage::disk('public')->deleteDirectory(dirname($order->image_path));
+        }
+
 
         return to_route('order.index')->with('success', 'Нарачката ' . $name . ' е успешно избришана!');
     }
@@ -137,7 +157,7 @@ class OrderController extends Controller
     {
         // Validate the incoming request
         $validated = $request->validate([
-            'production_status' => 'required|string|in:pending,processing,completed',
+            'production_status' => 'required|string|in:pending,processing',
         ]);
 
         // Update the order's production status

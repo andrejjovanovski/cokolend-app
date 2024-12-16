@@ -22,7 +22,7 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image_path' => 'required|image',
+            'image_path' => 'required|mimes:jpg,jpeg,png,bmp,gif,svg,webp',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
