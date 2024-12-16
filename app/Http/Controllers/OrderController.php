@@ -20,7 +20,9 @@ class OrderController extends Controller
     public function index()
     {
         if (!request('timeline')) {
-            $query = Order::query()->with('user')->orderBy('delivery_date', 'asc');
+            $query = Order::query()->with('user')
+                ->where('production_status', '!=','delivered')
+                ->orderBy('delivery_date', 'asc');
         } else {
             $query = Order::query()->with('user');
         }

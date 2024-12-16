@@ -87,14 +87,11 @@ export default function Index({ auth, orders, queryParams = null, success }) {
                     defaultValue={queryParams.status}
                     onChange={e => searchFieldChanged('status', e.target.value)}
                   >
-                    <option value="">Избери статус</option>
+                    <option value="">Сите</option>
                     <option value="pending">На чекање</option>
-                    <option value="processing">Во изработка</option>
-                    <option value="completed">Завршена</option>
-                    <option value="delivered">Доставена</option>
+                    <option value="processing">Прифатена</option>
                   </SelectInput>
                 </div>
-
               </div>
 
 
@@ -112,7 +109,6 @@ export default function Index({ auth, orders, queryParams = null, success }) {
                     toRoute={route("order.show", order.id)}
                   />
                 ))}
-
               </div>
 
               <Pagination links={orders.meta.links}/>
