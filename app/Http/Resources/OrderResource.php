@@ -15,6 +15,17 @@ class OrderResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+
+    protected $dateFormat = 'Y-m-d';
+
+
+    public function withDateFormat($format) {
+        $this->dateFormat = $format;
+        return $this;
+    }
+
+
+
     public function toArray(Request $request): array
     {
         return [
@@ -26,8 +37,9 @@ class OrderResource extends JsonResource
             'price' => $this->price,
             'production_status' => $this->production_status,
             'delivery_location' => $this->delivery_location,
-            'delivery_date' => $this->delivery_date ? Carbon::parse($this->delivery_date)->format('d-m-Y') : null,
-            'delivery_time' => $this->delivery_time,
+            'delivery_location_custom' => $this->delivery_location_custom,
+            'delivery_date' => $this->delivery_date ? Carbon::parse($this->delivery_date)->format($this->dateFormat) : null,
+            'delivery_time' => $this->delivery_time ? Carbon::parse($this->delivery_time)->format('H:i') : null,
             'delivered' => $this->delivered,
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d-m-Y H:i:s') : null,
             'customer_name' => $this->customer_name,
