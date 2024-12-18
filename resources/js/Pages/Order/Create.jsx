@@ -45,25 +45,11 @@ export default function Create({auth}) {
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <form
+              encType="multipart/form-data"
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-dark:800 shadow sm:rounded-lg"
             >
-              <div>
-                <InputLabel
-                  htmlFor="order_image_path"
-                  value="Слика"
-                />
 
-                <TextInput
-                  id="order_image_path"
-                  name="image_path"
-                  type="file"
-                  className="mt-1 w-full block"
-                  onChange={(e) => setData('image_path', e.target.files[0])}
-                />
-
-                <InputError message={errors.image_path} className="mt-2"/>
-              </div>
 
               <div className="mt-4">
                 <InputLabel
