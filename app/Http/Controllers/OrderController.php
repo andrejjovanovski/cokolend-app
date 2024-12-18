@@ -132,8 +132,7 @@ class OrderController extends Controller
         $image = $data['image'] ?? null;
 
         if ($image) {
-            // Generate a custom folder name based on the order's name
-            $customName = Str::slug($data['name'] ?? $order->name, '-');
+           $customName = Str::random() . '-' . time();
 
             // Delete the existing image and its directory if it exists
             if ($order->image_path) {

@@ -105,7 +105,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                       defaultValue={queryParams.status}
                       onChange={e => searchFieldChanged('status', e.target.value)}
                     >
-                      <option value="">Сите</option>
+                      <option value="">Статус</option>
                       <option value="pending">На чекање</option>
                       <option value="processing">Прифатена</option>
                     </SelectInput>
