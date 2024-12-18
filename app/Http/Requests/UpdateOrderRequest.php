@@ -24,11 +24,10 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'nullable|image',
+            'image' => 'nullable',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
-//            'production_status' => 'required|string', Rule::in('pending', 'processing', 'completed', 'delivered'),
             'delivery_location' => 'required|string|max:255',
             'delivery_location_custom' => 'nullable|string|max:255',
             'delivery_date' => 'required|date',
