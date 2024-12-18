@@ -22,7 +22,7 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image_path' => 'required|mimes:jpg,jpeg,png,bmp,gif,svg,webp',
+            'image_path' => 'required',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
@@ -32,7 +32,6 @@ class StoreOrderRequest extends FormRequest
             'delivery_time' => 'required|date_format:H:i',
             'customer_name' => 'required|string|max:255',
             'customer_phone_number' => 'required|string|max:255',
-
         ];
     }
 }

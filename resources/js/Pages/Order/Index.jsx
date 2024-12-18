@@ -1,12 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, router } from "@inertiajs/react";
+import {Head, Link, router} from "@inertiajs/react";
 import Card from "@/Components/Card.jsx";
 import Pagination from "@/Components/Pagination.jsx";
 import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
+import SecondaryButton from "@/Components/SecondaryButton.jsx";
 
-export default function Index({ auth, orders, queryParams = null, success }) {
+export default function Index({auth, orders, queryParams = null, success}) {
   queryParams = queryParams || {};
 
   const searchFieldChanged = (name, value) => {
@@ -37,6 +38,10 @@ export default function Index({ auth, orders, queryParams = null, success }) {
     }
   }, [successMessage]);
 
+  const clearFilters = () => {
+    router.get(route('order.index'), {});
+  }
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -54,7 +59,7 @@ export default function Index({ auth, orders, queryParams = null, success }) {
         </div>
       }
     >
-      <Head title="Нарачки" />
+      <Head title="Нарачки"/>
 
       {successMessage && (
         <div className="bg-emerald-500 py-2 px-4 text-white rounded">{successMessage}</div>
@@ -65,7 +70,7 @@ export default function Index({ auth, orders, queryParams = null, success }) {
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <div className="flex items-center justify-between flex-col md:flex-row">
-                <div className="mb-2 md:mb-0 flex items-center gap-3">
+                <div className="mb-2 md:mb-0 flex items-center gap-3 w-full md:w-auto">
                   <SelectInput
                     defaultValue={queryParams.timeline}
                     onChange={e => searchFieldChanged('timeline', e.target.value)}
@@ -86,21 +91,31 @@ export default function Index({ auth, orders, queryParams = null, success }) {
                 </div>
 
 
-                <div className="flex items-center justify-end content-end gap-3">
+                <div className="flex items-center flex-wrap md:flex-nowrap md:justify-end md:gap-3 content-end">
                   <TextInput
+                    className="w-full mb-3 md:w-auto md:mb-0"
                     placeholder="Пребарувај"
                     defaultValue={queryParams.name}
                     onBlur={e => searchFieldChanged('name', e.target.value)}
                     onKeyPress={e => onKeyPress('name', e)}
                   />
-                  <SelectInput
-                    defaultValue={queryParams.status}
-                    onChange={e => searchFieldChanged('status', e.target.value)}
-                  >
-                    <option value="">Сите</option>
-                    <option value="pending">На чекање</option>
-                    <option value="processing">Прифатена</option>
-                  </SelectInput>
+                  <div className="flex w-full gap-3 items-center">
+                    <SelectInput
+                      className=""
+                      defaultValue={queryParams.status}
+                      onChange={e => searchFieldChanged('status', e.target.value)}
+                    >
+                      <option value="">Сите</option>
+                      <option value="pending">На чекање</option>
+                      <option value="processing">Прифатена</option>
+                    </SelectInput>
+                    <SecondaryButton
+                      className="py-3 w-full md:w-auto"
+                      onClick={clearFilters}
+                    >
+                      Избриши
+                    </SecondaryButton>
+                  </div>
                 </div>
               </div>
               <div className="flex items-center justify-around flex-wrap z-10">

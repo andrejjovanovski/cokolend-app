@@ -65,13 +65,13 @@ export default function Edit({auth, order}) {
 
                 <TextInput
                   id="order_image_path"
-                  name="image_path"
+                  name="image"
                   type="file"
                   className="mt-1 w-full block"
-                  onChange={(e) => setData('image_path', e.target.files[0])}
+                  onChange={(e) => setData('image', e.target.files[0])}
                 />
 
-                <InputError message={errors.image_path} className="mt-2"/>
+                <InputError message={errors.image} className="mt-2"/>
               </div>
 
               <div className="mt-4">
