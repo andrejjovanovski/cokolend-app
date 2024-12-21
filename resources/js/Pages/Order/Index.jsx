@@ -6,6 +6,8 @@ import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
 import {useEffect, useState} from "react";
 import SecondaryButton from "@/Components/SecondaryButton.jsx";
+import dayjs from "dayjs";
+import {DatePicker} from "antd";
 
 export default function Index({auth, orders, queryParams = null, success}) {
   queryParams = queryParams || {};
@@ -82,11 +84,13 @@ export default function Index({auth, orders, queryParams = null, success}) {
                     <option value="30">1 месец</option>
                   </SelectInput>
 
-                  <TextInput
-                    defaultValue={queryParams.delivery_date}
-                    type="date"
-                    className="w-full block"
-                    onChange={e => searchFieldChanged('delivery_date', e.target.value)}
+                  <DatePicker
+                    value={queryParams.delivery_date ? dayjs(queryParams.delivery_date) : null}
+                    placeholder="Избери датум"
+                    needConfirm
+                    format="YYYY-MM-DD"
+                    onChange={(date, dateString) => searchFieldChanged("delivery_date", dateString)}
+                    className="w-full h-full block rounded-md border-gray-300 shadow-sm py-2"
                   />
                 </div>
 
@@ -105,7 +109,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                       defaultValue={queryParams.status}
                       onChange={e => searchFieldChanged('status', e.target.value)}
                     >
-                      <option value="">Сите</option>
+                      <option value="">Статус</option>
                       <option value="pending">На чекање</option>
                       <option value="processing">Прифатена</option>
                     </SelectInput>

@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 
 class OrderController extends Controller
@@ -79,18 +80,45 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-
         $data = $request->validated();
 
-        /** @var $image \Illuminate\Http\UploadedFile */
+        /** @var \Illuminate\Http\UploadedFile|null $image */
         $image = $data['image_path'] ?? null;
 
         $data['user_id'] = auth()->id();
 
         if ($image) {
-            $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
+            // Prepare paths
+            $originalPath = $image->getRealPath(); // Original HEIC file
+            $directory = 'order/' . Str::random(10) . '-' . time();
+            $filename = Str::random(20) . '.jpg'; // Target JPEG filename
+            $jpegPath = storage_path("app/public/{$directory}/{$filename}");
+
+            // Create directory
+            Storage::disk('public')->makeDirectory($directory);
+
+            // Convert HEIC to JPEG using heif-convert
+            exec("heif-convert {$originalPath} {$jpegPath}", $output, $result);
+
+            // Check if conversion succeeded
+            if ($result !== 0 || !file_exists($jpegPath)) {
+                return back()->with('error', 'Failed to process HEIC image.');
+            }
+
+            // Resize the converted JPEG image
+            $resizedImage = Image::make($jpegPath)
+                ->resize(1920, 1080, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+
+            $resizedImage->save($jpegPath, 100);
+
+            // Save path in database
+            $data['image_path'] = "{$directory}/{$filename}";
         }
 
+        // Store order
         Order::create($data);
 
         return to_route("order.index")->with("success", "Нарачката е успешно креирана!");
@@ -132,8 +160,7 @@ class OrderController extends Controller
         $image = $data['image'] ?? null;
 
         if ($image) {
-            // Generate a custom folder name based on the order's name
-            $customName = Str::slug($data['name'] ?? $order->name, '-');
+           $customName = Str::random() . '-' . time();
 
             // Delete the existing image and its directory if it exists
             if ($order->image_path) {

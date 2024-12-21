@@ -4,7 +4,8 @@ import InputLabel from "@/Components/InputLabel.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import InputError from "@/Components/InputError.jsx";
 import TextAreaInput from "@/Components/TextAreaInput.jsx";
-import Checkbox from "@/Components/Checkbox.jsx";
+import { DatePicker } from "antd";
+import dayjs from "dayjs"; // Optional, for formatting
 
 export default function Create({auth}) {
 
@@ -47,6 +48,7 @@ export default function Create({auth}) {
             <form
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-dark:800 shadow sm:rounded-lg"
+              encType="multipart/form-data"
             >
               <div>
                 <InputLabel
@@ -224,14 +226,15 @@ export default function Create({auth}) {
                   value="Датум на достава"
                 />
 
-                <TextInput
+                <DatePicker
                   id="delivery_date"
+                  placeholder="Избери датум"
+                  needConfirm
                   name="delivery_date"
-                  type="date"
-                  value={data.delivery_date}
-                  className="mt-1 w-full block"
-                  isFocused={true}
-                  onChange={(e) => setData('delivery_date', e.target.value)}
+                  format="YYYY-MM-DD" // Optional: Customize date format
+                  value={data.delivery_date ? dayjs(data.delivery_date) : null}
+                  onChange={(date, dateString) => setData("delivery_date", dateString)}
+                  className="mt-1 w-full block rounded-md border-gray-300 shadow-sm py-2"
                 />
 
                 <InputError message={errors.delivery_date} className="mt-2"/>
