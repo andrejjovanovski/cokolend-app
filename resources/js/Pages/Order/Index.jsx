@@ -88,6 +88,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                     value={queryParams.delivery_date ? dayjs(queryParams.delivery_date) : null}
                     placeholder="Избери датум"
                     needConfirm
+                    inputReadOnly
                     format="YYYY-MM-DD"
                     onChange={(date, dateString) => searchFieldChanged("delivery_date", dateString)}
                     className="w-full h-full block rounded-md border-gray-300 shadow-sm py-2"
