@@ -42,7 +42,7 @@ class OrderController extends Controller
 
         if (request('timeline')) {
             if (request('timeline') == 'newest') {
-                $query->whereDate('created_at', Carbon::now());
+                $query->whereDate('created_at', Carbon::now())->orderBy('created_at', 'desc');
             } else if (request('timeline') == 'today') {
                 $query->whereDate('delivery_date', Carbon::now());
             } else {
@@ -128,18 +128,24 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-//        dd($request->validated());
         $data = $request->validated();
         $image = $data['image'] ?? null;
 
-
-
         if ($image) {
+           $customName = Str::random() . '-' . time();
+
+            // Delete the existing image and its directory if it exists
             if ($order->image_path) {
                 Storage::disk('public')->deleteDirectory(dirname($order->image_path));
             }
-            $data['image_path'] = $image->store('order/' . Str::random() . '-' . time(), 'public');
+
+            // Save the new image in the "order/{custom_name}" directory
+            $data['image_path'] = $image->store("order/$customName", 'public');
+        } else {
+            unset($data['image']);
         }
+
+        // Update the order with the new data
         $order->update($data);
 
         return to_route("order.index")->with("success", "Нарачката " . $order->name . " е успешно изменета!");

@@ -47,6 +47,7 @@ export default function Create({auth}) {
             <form
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-dark:800 shadow sm:rounded-lg"
+              encType="multipart/form-data"
             >
               <div>
                 <InputLabel
