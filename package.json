@@ -23,7 +23,9 @@
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/server": "^0.1.0",
+        "antd": "^5.22.5",
         "dayjs": "^1.11.13",
+        "react-flatpickr": "^3.10.13",
         "react-icons": "^5.4.0"
     }
 }
