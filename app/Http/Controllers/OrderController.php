@@ -97,12 +97,17 @@ class OrderController extends Controller
             // Create directory
             Storage::disk('public')->makeDirectory($directory);
 
-            // Convert HEIC to JPEG using heif-convert
-            exec("heif-convert {$originalPath} {$jpegPath}", $output, $result);
+            if ($image->getClientOriginalExtension() === 'HEIC' || $image->getClientOriginalExtension() === 'HEIF') {
+                // Convert HEIC to JPEG using heif-convert
+                exec("heif-convert {$originalPath} {$jpegPath}", $output, $result);
 
-            // Check if conversion succeeded
-            if ($result !== 0 || !file_exists($jpegPath)) {
-                return back()->with('error', 'Failed to process HEIC image.');
+                // Check if conversion succeeded
+                if ($result !== 0 || !file_exists($jpegPath)) {
+                    dump("Failed to convert {$originalPath} {$jpegPath}");
+                    return back()->with('error', 'Failed to process HEIC image.');
+                }
+            } else {
+                $image->move(storage_path("app/public/{$directory}"), $filename);
             }
 
             // Resize the converted JPEG image
