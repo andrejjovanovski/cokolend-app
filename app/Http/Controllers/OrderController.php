@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Events\OrderCreated;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -53,6 +54,8 @@ class OrderController extends Controller
         }
 
         $orders = $query->paginate(9)->onEachSide(1);
+
+        $orders->appends(request()->query());
 
         $ordersCollection = $orders->getCollection()->map(function ($order) {
             return (new OrderResource($order))->withDateFormat('d-m-Y');
@@ -124,7 +127,10 @@ class OrderController extends Controller
         }
 
         // Store order
-        Order::create($data);
+        $order = Order::create($data);
+
+        // Fire an event for the new order
+        broadcast(new OrderCreated($order, auth()->id()));
 
         return to_route("order.index")->with("success", "Нарачката е успешно креирана!");
     }
