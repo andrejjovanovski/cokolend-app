@@ -8,9 +8,54 @@ import {useEffect, useState} from "react";
 import SecondaryButton from "@/Components/SecondaryButton.jsx";
 import dayjs from "dayjs";
 import {DatePicker} from "antd";
+import PopupNotification from "@/Components/PopupNotification.jsx";
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
 export default function Index({auth, orders, queryParams = null, success}) {
   queryParams = queryParams || {};
+  const [ordersList, setOrdersList] = useState(orders);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: ''
+  });
+
+  const handleCloseNotification = () => {
+    setNotification({ show: false, message: '' });
+  };
+
+  useEffect(() => {
+    const channel = window.Echo.private(`orders`);
+
+    channel.listen('OrderCreated', (e) => {
+      if (e.order.user_id !== auth.user.id) {
+        console.log(e.order);
+        // Show notification for new order
+        setNotification({
+          show: true,
+          message: `Креирана е нова нарачка!`
+        });
+
+        // Update orders list
+        setOrdersList(prevOrders => ({
+          ...prevOrders,
+          data: [e.order, ...prevOrders.data]
+        }));
+
+        // Auto hide after 5 seconds
+        // setTimeout(() => {
+        //   setNotification(prev => ({
+        //     ...prev,
+        //     show: false
+        //   }));
+        // }, 5000);
+      }
+    });
+
+    return () => {
+      channel.stopListening('OrderCreated');
+    };
+  }, []);
 
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -65,6 +110,13 @@ export default function Index({auth, orders, queryParams = null, success}) {
 
       {successMessage && (
         <div className="bg-emerald-500 py-2 px-4 text-white rounded">{successMessage}</div>
+      )}
+
+      {notification.show && (
+        <PopupNotification
+          message={notification.message}
+          onClose={handleCloseNotification}
+        />
       )}
 
       <div className="py-12">
@@ -124,7 +176,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                 </div>
               </div>
               <div className="flex items-center justify-around flex-wrap z-10">
-                {orders.data.map((order) => (
+                {ordersList.data.map((order) => (
                   <Card
                     key={order.id}
                     image={order.image_path}
@@ -138,7 +190,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                   />
                 ))}
               </div>
-              <Pagination links={orders.meta.links}/>
+              <Pagination links={ordersList.meta.links}/>
             </div>
           </div>
         </div>
