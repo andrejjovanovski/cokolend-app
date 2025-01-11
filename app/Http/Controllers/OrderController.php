@@ -115,6 +115,7 @@ class OrderController extends Controller
 
             // Resize the converted JPEG image
             $resizedImage = Image::make($jpegPath)
+                ->orientate()
                 ->resize(1920, 1080, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
@@ -125,6 +126,8 @@ class OrderController extends Controller
             // Save path in database
             $data['image_path'] = "{$directory}/{$filename}";
         }
+
+        $data['updated_by'] = auth()->id();
 
         // Store order
         $order = Order::create($data);
@@ -140,7 +143,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load("user");
+        $order->load("user", "updatedBy");
 
         return inertia('Order/Show', [
             'order' => (new OrderResource($order))->withDateFormat('d-m-Y')
@@ -186,6 +189,8 @@ class OrderController extends Controller
 
         // Update the order with the new data
         $order->update($data);
+        $order->updated_by = auth()->id();
+        $order->save();
 
         return to_route("order.index")->with("success", "Нарачката " . $order->name . " е успешно изменета!");
     }

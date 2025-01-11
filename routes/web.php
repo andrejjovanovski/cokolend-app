@@ -37,4 +37,9 @@ Route::get('/set-locale/{locale}', function ($locale) {
     return redirect()->back();
 });
 
+Route::post('user/update-fcm-token', [UserController::class, 'updateFcmToken'])
+    ->name('user.update.fcm-token')
+    ->middleware('auth:sanctum');
+
+
 require __DIR__ . '/auth.php';

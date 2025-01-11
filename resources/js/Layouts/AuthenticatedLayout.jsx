@@ -3,12 +3,36 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import {Link, usePage} from '@inertiajs/react';
 import {useEffect, useState} from 'react';
+import { generateToken, messaging } from '@/Notifications/firebase';
+import { onMessage } from 'firebase/messaging';
+import axios from 'axios';
+
 
 export default function AuthenticatedLayout({header, children}) {
   const user = usePage().props.auth.user;
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
+
+    useEffect(() => {
+        // Only generate token if user doesn't have one
+        if (!user.fcm_token) {
+            generateToken()
+                .then(response => {
+                    // Send token to backend to update user record
+                    if (response?.token) {
+                        axios.post('/user/update-fcm-token', { token: response.token })
+                            .catch(error => console.error('Failed to update FCM token:', error));
+                    }
+                })
+                .catch(error => console.error('Failed to generate FCM token:', error));
+        }
+
+        // Listen for messages regardless of token status
+        onMessage(messaging, (payload) => {
+            console.log(payload);
+        });
+    }, [user.fcm_token]);
 
 
   useEffect(() => {
