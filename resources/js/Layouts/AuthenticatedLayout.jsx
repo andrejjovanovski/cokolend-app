@@ -30,7 +30,6 @@ export default function AuthenticatedLayout({header, children}) {
 
         // Listen for messages regardless of token status
         onMessage(messaging, (payload) => {
-            console.log(payload);
         });
     }, [user.fcm_token]);
 

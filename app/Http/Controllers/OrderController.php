@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
+use Kreait\Firebase\Messaging\ApnsConfig;
 
 
 class OrderController extends Controller
@@ -136,7 +137,7 @@ class OrderController extends Controller
         broadcast(new OrderCreated($order, auth()->id()));
 
         // Send Firebase notification to admins
-        $this->sendAdminNotification($order);
+        $this->sendAdminNotification($order, 'create');
 
         return to_route("order.index")->with("success", "Нарачката е успешно креирана!");
     }
@@ -194,6 +195,7 @@ class OrderController extends Controller
         // Update the order with the new data
         $order->update($data);
         $order->updated_by = auth()->id();
+        $this->sendAdminNotification($order, 'update');
         $order->save();
 
         return to_route("order.index")->with("success", "Нарачката " . $order->name . " е успешно изменета!");
@@ -232,7 +234,7 @@ class OrderController extends Controller
     /**
      * Send Firebase Notification to Admins.
      */
-    protected function sendAdminNotification(Order $order)
+    protected function sendAdminNotification(Order $order, string $method)
     {
         $firebaseMessaging = app('firebase.messaging');
 
@@ -248,14 +250,29 @@ class OrderController extends Controller
         }
 
         // Create the notification
+        if ($method == 'create') {
         $message = \Kreait\Firebase\Messaging\CloudMessage::new()
             ->withNotification(\Kreait\Firebase\Messaging\Notification::create(
                 'New Order Created',
-                "Order #{$order->id} has been created."
+                "Order #{$order->id} has been created.",
+                'images/logo.png',
             ))
             ->withData([
                 'order_id' => (string) $order->id,
             ]);
+        } elseif ($method == 'update') {
+            $message = \Kreait\Firebase\Messaging\CloudMessage::new()
+                ->withNotification(\Kreait\Firebase\Messaging\Notification::create(
+                    'Order Updated',
+                    "Order #{$order->id} has been updated.",
+                ))
+                ->withData([
+                    'order_id' => (string) $order->id,
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                    'url' => route('order.show', $order->id),
+                ])
+                ->withDefaultSounds();
+        }
 
         // Send the notification to all admin tokens
         $firebaseMessaging->sendMulticast($message, $adminTokens);
