@@ -1,15 +1,48 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import {Link, usePage} from '@inertiajs/react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import { generateToken, messaging } from '@/Notifications/firebase';
+import { onMessage } from 'firebase/messaging';
+import axios from 'axios';
+
 
 export default function AuthenticatedLayout({header, children}) {
   const user = usePage().props.auth.user;
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
+
+    useEffect(() => {
+        // Only generate token if user doesn't have one
+        if (!user.fcm_token) {
+            generateToken()
+                .then(response => {
+                    // Send token to backend to update user record
+                    if (response?.token) {
+                        axios.post('/user/update-fcm-token', { token: response.token })
+                            .catch(error => console.error('Failed to update FCM token:', error));
+                    }
+                })
+                .catch(error => console.error('Failed to generate FCM token:', error));
+        }
+
+        // Listen for messages regardless of token status
+        onMessage(messaging, (payload) => {
+        });
+    }, [user.fcm_token]);
+
+
+  useEffect(() => {
+    window.Echo.channel(`orders`)
+      .listen('OrderCreated', (event) => {
+        if (event.excluded_user_id !== window.authUserId) {
+          console.log(event)
+        }
+      })
+  }, [])
+
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -38,12 +71,6 @@ export default function AuthenticatedLayout({header, children}) {
                   Нарачки
                 </NavLink>
 
-                {/*<NavLink*/}
-                {/*  href={route('user.index')}*/}
-                {/*  active={route().current('user.index')}*/}
-                {/*>*/}
-                {/*  Users*/}
-                {/*</NavLink>*/}
               </div>
             </div>
 

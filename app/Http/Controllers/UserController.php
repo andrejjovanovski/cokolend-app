@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -62,5 +63,18 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string'
+        ]);
+
+        auth()->user()->update([
+            'fcm_token' => $request->token
+        ]);
+
+        return response()->json(['message' => 'FCM token updated successfully']);
     }
 }

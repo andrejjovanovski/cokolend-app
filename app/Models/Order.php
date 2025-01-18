@@ -25,11 +25,16 @@ class Order extends Model
         'delivered',
         'customer_name',
         'customer_phone_number',
-
+        'updated_by',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Events\OrderCreated;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
+use Kreait\Firebase\Messaging\ApnsConfig;
 
 
 class OrderController extends Controller
@@ -53,6 +55,8 @@ class OrderController extends Controller
         }
 
         $orders = $query->paginate(9)->onEachSide(1);
+
+        $orders->appends(request()->query());
 
         $ordersCollection = $orders->getCollection()->map(function ($order) {
             return (new OrderResource($order))->withDateFormat('d-m-Y');
@@ -112,6 +116,7 @@ class OrderController extends Controller
 
             // Resize the converted JPEG image
             $resizedImage = Image::make($jpegPath)
+                ->orientate()
                 ->resize(1920, 1080, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
@@ -123,18 +128,27 @@ class OrderController extends Controller
             $data['image_path'] = "{$directory}/{$filename}";
         }
 
+        $data['updated_by'] = auth()->id();
+
         // Store order
-        Order::create($data);
+        $order = Order::create($data);
+
+        // Fire an event for the new order
+        broadcast(new OrderCreated($order, auth()->id()));
+
+        // Send Firebase notification to admins
+        $this->sendAdminNotification($order, 'create');
 
         return to_route("order.index")->with("success", "Нарачката е успешно креирана!");
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Order $order)
     {
-        $order->load("user");
+        $order->load("user", "updatedBy");
 
         return inertia('Order/Show', [
             'order' => (new OrderResource($order))->withDateFormat('d-m-Y')
@@ -180,6 +194,9 @@ class OrderController extends Controller
 
         // Update the order with the new data
         $order->update($data);
+        $order->updated_by = auth()->id();
+        $this->sendAdminNotification($order, 'update');
+        $order->save();
 
         return to_route("order.index")->with("success", "Нарачката " . $order->name . " е успешно изменета!");
     }
@@ -212,5 +229,52 @@ class OrderController extends Controller
 
         // Return a success response
         return redirect()->back()->with('success', 'Order status updated successfully!');
+    }
+
+    /**
+     * Send Firebase Notification to Admins.
+     */
+    protected function sendAdminNotification(Order $order, string $method)
+    {
+        $firebaseMessaging = app('firebase.messaging');
+
+        // Get tokens for admin users
+        $adminTokens = \App\Models\User::where('role', '=', 'admin')
+            ->pluck('fcm_token') // Assuming each admin user has a `firebase_token` column
+            ->filter()
+            ->toArray();
+
+
+        if (empty($adminTokens)) {
+            return;
+        }
+
+        // Create the notification
+        if ($method == 'create') {
+        $message = \Kreait\Firebase\Messaging\CloudMessage::new()
+            ->withNotification(\Kreait\Firebase\Messaging\Notification::create(
+                'New Order Created',
+                "Order #{$order->id} has been created.",
+                'images/logo.png',
+            ))
+            ->withData([
+                'order_id' => (string) $order->id,
+            ]);
+        } elseif ($method == 'update') {
+            $message = \Kreait\Firebase\Messaging\CloudMessage::new()
+                ->withNotification(\Kreait\Firebase\Messaging\Notification::create(
+                    'Order Updated',
+                    "Order #{$order->id} has been updated.",
+                ))
+                ->withData([
+                    'order_id' => (string) $order->id,
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                    'url' => route('order.show', $order->id),
+                ])
+                ->withDefaultSounds();
+        }
+
+        // Send the notification to all admin tokens
+        $firebaseMessaging->sendMulticast($message, $adminTokens);
     }
 }
