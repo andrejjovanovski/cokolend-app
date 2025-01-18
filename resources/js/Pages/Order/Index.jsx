@@ -41,14 +41,6 @@ export default function Index({auth, orders, queryParams = null, success}) {
           ...prevOrders,
           data: [e.order, ...prevOrders.data]
         }));
-
-        // Auto hide after 5 seconds
-        // setTimeout(() => {
-        //   setNotification(prev => ({
-        //     ...prev,
-        //     show: false
-        //   }));
-        // }, 5000);
       }
     });
 

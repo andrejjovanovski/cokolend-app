@@ -25,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'fcm_token',
     ];
 
     /**
@@ -52,5 +53,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function orders(): HasMany {
         return $this->hasMany(Order::class);
+    }
+
+    public function updatedOrders(): HasMany {
+        return $this->hasMany(Order::class, 'updated_by');
     }
 }

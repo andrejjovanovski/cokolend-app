@@ -49,6 +49,7 @@ export default function Show({auth, order}) {
     );
   };
 
+
   // DELETE ORDER
   const deleteOrder = (order) => {
     if (!window.confirm("Дали сте сигурни дека сакате да ја избришете нарачката?")) {
@@ -115,17 +116,18 @@ export default function Show({auth, order}) {
                     <p className="mt-1">{order.price} MKD</p>
                   </div>
 
-                  <div className="mt-4 flex flex-col md:flex-row gap-0 items-center md:gap-7 no">
-                    <div>
+                  <div className="mt-4 flex sm:gap-10 flex-col md:flex-row md:gap-10">
+                  <div>
                       <label className="font-bold text-lg">Датум за испорака</label>
                       <p className="mt-1">{order.delivery_date}</p>
                     </div>
+
                     <div className="me-6">
                       <label className="font-bold text-lg">Час за испорака</label>
                       <p className="mt-1">{order.delivery_time}</p>
                     </div>
-
                   </div>
+
 
                   <div className="mt-4">
                     <label className="font-bold text-lg">Статус на нарачка</label>
@@ -134,10 +136,18 @@ export default function Show({auth, order}) {
                     </p>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-4 flex sm:gap-10 flex-col md:flex-row md:gap-10">
+                    <div>
                     <label className="font-bold text-lg">Креирана од</label>
                     <p className="mt-1">{order.user_id.name}, <i>{order.created_at}</i></p>
+                    </div>
+
+                    <div>
+                    <label className="font-bold text-lg">Изменета од</label>
+                    <p className="mt-1">{order.updated_by.name}, <i>{order.updated_at}</i></p>
+                    </div>
                   </div>
+
                 </div>
 
                 {/*RIGHT COL*/}
