@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->foreignId('updated_by')->references('id')->on('users');
+            $table->foreignId('updated_by')->nullable()->references('id')->on('users');
 
         });
     }
