@@ -3,9 +3,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import {Link, usePage} from '@inertiajs/react';
 import {useEffect, useState} from 'react';
-import { generateToken, messaging } from '@/Notifications/firebase';
-import { onMessage } from 'firebase/messaging';
-import axios from 'axios';
+import axios from "axios";
 
 
 export default function AuthenticatedLayout({header, children}) {
@@ -14,27 +12,8 @@ export default function AuthenticatedLayout({header, children}) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
+
     useEffect(() => {
-        // Only generate token if user doesn't have one
-        if (!user.fcm_token) {
-            generateToken()
-                .then(response => {
-                    // Send token to backend to update user record
-                    if (response?.token) {
-                        axios.post('/user/update-fcm-token', { token: response.token })
-                            .catch(error => console.error('Failed to update FCM token:', error));
-                    }
-                })
-                .catch(error => console.error('Failed to generate FCM token:', error));
-        }
-
-        // Listen for messages regardless of token status
-        onMessage(messaging, (payload) => {
-        });
-    }, [user.fcm_token]);
-
-
-  useEffect(() => {
     window.Echo.channel(`orders`)
       .listen('OrderCreated', (event) => {
         if (event.excluded_user_id !== window.authUserId) {
@@ -43,9 +22,11 @@ export default function AuthenticatedLayout({header, children}) {
       })
   }, [])
 
+  const currentYear = new Date().getFullYear();
+
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
       <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 sticky top-0 z-20 w-full">
         <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
@@ -225,7 +206,15 @@ export default function AuthenticatedLayout({header, children}) {
         </header>
       )}
 
-      <main>{children}</main>
+      <main className="flex-grow">{children}</main>
+
+      <footer className="text-center py-4 bg-gray-100 border-t border-gray-300">
+        <p className="text-sm text-gray-600">
+          Designed and developed by <a href="https://www.codeaxis.dev"><strong
+          className="font-semibold hover:underline">Codeaxis</strong></a> | &copy; <span
+          id="current-year">{currentYear}</span> All Rights Reserved.
+        </p>
+      </footer>
     </div>
   );
 }

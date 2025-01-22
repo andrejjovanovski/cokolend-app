@@ -13,6 +13,7 @@
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "minishlink/web-push": "^9.0",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

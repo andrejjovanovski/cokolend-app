@@ -117,7 +117,7 @@ export default function Show({auth, order}) {
                   </div>
 
                   <div className="mt-4 flex sm:gap-10 flex-col md:flex-row md:gap-10">
-                  <div>
+                    <div>
                       <label className="font-bold text-lg">Датум за испорака</label>
                       <p className="mt-1">{order.delivery_date}</p>
                     </div>
@@ -138,13 +138,21 @@ export default function Show({auth, order}) {
 
                   <div className="mt-4 flex sm:gap-10 flex-col md:flex-row md:gap-10">
                     <div>
-                    <label className="font-bold text-lg">Креирана од</label>
-                    <p className="mt-1">{order.user_id.name}, <i>{order.created_at}</i></p>
+                      <label className="font-bold text-lg">Креирана од</label>
+                      <p className="mt-1">{order.user_id.name}, <i>{order.created_at}</i></p>
                     </div>
 
                     <div>
-                    <label className="font-bold text-lg">Изменета од</label>
-                    <p className="mt-1">{order.updated_by.name}, <i>{order.updated_at}</i></p>
+                      <label className="font-bold text-lg">Изменета од</label>
+                      <p className="mt-1">
+                        {order.updated_by === null ? (
+                          ' '
+                        ) : (
+                          <>
+                            {order.updated_by.name}, <i>{order.updated_at}</i>
+                          </>
+                        )}
+                      </p>
                     </div>
                   </div>
 
