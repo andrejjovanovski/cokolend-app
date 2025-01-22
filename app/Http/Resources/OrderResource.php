@@ -42,8 +42,10 @@ class OrderResource extends JsonResource
             'delivery_time' => $this->delivery_time ? Carbon::parse($this->delivery_time)->format('H:i') : null,
             'delivered' => $this->delivered,
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('d-m-Y H:i:s') : null,
+            'updated_by' => $this->updated_by ? UserResource::make($this->whenLoaded('updatedBy')) : null,
+            'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->format('d-m-Y H:i:s') : null,
             'customer_name' => $this->customer_name,
-            'customer_phone_number' => $this->customer_phone_number,
+        'customer_phone_number' => $this->customer_phone_number,
         ];
     }
 }

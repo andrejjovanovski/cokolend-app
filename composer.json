@@ -8,9 +8,12 @@
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^1.0",
         "intervention/image": "^2",
+        "kreait/laravel-firebase": "^5.10",
         "laravel/framework": "^11.9",
+        "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "minishlink/web-push": "^9.0",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

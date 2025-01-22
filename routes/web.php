@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PushNotificationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,5 +37,13 @@ Route::get('/set-locale/{locale}', function ($locale) {
 
     return redirect()->back();
 });
+
+Route::post('user/update-fcm-token', [UserController::class, 'updateFcmToken'])
+    ->name('user.update.fcm-token')
+    ->middleware('auth:sanctum');
+
+
+Route::post('save-push-notification-sub', [PushNotificationController::class, 'saveSubscription']);
+Route::post('send-push-notification', [PushNotificationController::class, 'sendPushNotification']);
 
 require __DIR__ . '/auth.php';

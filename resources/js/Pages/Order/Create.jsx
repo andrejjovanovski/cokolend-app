@@ -230,6 +230,7 @@ export default function Create({auth}) {
                   id="delivery_date"
                   placeholder="Избери датум"
                   needConfirm
+                  inputReadOnly
                   name="delivery_date"
                   format="YYYY-MM-DD" // Optional: Customize date format
                   value={data.delivery_date ? dayjs(data.delivery_date) : null}

@@ -8,9 +8,46 @@ import {useEffect, useState} from "react";
 import SecondaryButton from "@/Components/SecondaryButton.jsx";
 import dayjs from "dayjs";
 import {DatePicker} from "antd";
+import PopupNotification from "@/Components/PopupNotification.jsx";
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
 export default function Index({auth, orders, queryParams = null, success}) {
   queryParams = queryParams || {};
+  const [ordersList, setOrdersList] = useState(orders);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: ''
+  });
+
+  const handleCloseNotification = () => {
+    setNotification({ show: false, message: '' });
+  };
+
+  useEffect(() => {
+    const channel = window.Echo.private(`orders`);
+
+    channel.listen('OrderCreated', (e) => {
+      if (e.order.user_id !== auth.user.id) {
+        console.log(e.order);
+        // Show notification for new order
+        setNotification({
+          show: true,
+          message: `Креирана е нова нарачка!`
+        });
+
+        // Update orders list
+        setOrdersList(prevOrders => ({
+          ...prevOrders,
+          data: [e.order, ...prevOrders.data]
+        }));
+      }
+    });
+
+    return () => {
+      channel.stopListening('OrderCreated');
+    };
+  }, []);
 
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -67,6 +104,13 @@ export default function Index({auth, orders, queryParams = null, success}) {
         <div className="bg-emerald-500 py-2 px-4 text-white rounded">{successMessage}</div>
       )}
 
+      {notification.show && (
+        <PopupNotification
+          message={notification.message}
+          onClose={handleCloseNotification}
+        />
+      )}
+
       <div className="py-12">
         <div className="mx-auto max-w-[1500px] sm:px-6 lg:px-8">
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
@@ -88,6 +132,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                     value={queryParams.delivery_date ? dayjs(queryParams.delivery_date) : null}
                     placeholder="Избери датум"
                     needConfirm
+                    inputReadOnly
                     format="YYYY-MM-DD"
                     onChange={(date, dateString) => searchFieldChanged("delivery_date", dateString)}
                     className="w-full h-full block rounded-md border-gray-300 shadow-sm py-2"
@@ -123,7 +168,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                 </div>
               </div>
               <div className="flex items-center justify-around flex-wrap z-10">
-                {orders.data.map((order) => (
+                {ordersList.data.map((order) => (
                   <Card
                     key={order.id}
                     image={order.image_path}
@@ -137,7 +182,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                   />
                 ))}
               </div>
-              <Pagination links={orders.meta.links}/>
+              <Pagination links={ordersList.meta.links}/>
             </div>
           </div>
         </div>

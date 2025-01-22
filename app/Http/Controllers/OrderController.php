@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Events\OrderCreated;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
+use Kreait\Firebase\Messaging\ApnsConfig;
 
 
 class OrderController extends Controller
@@ -53,6 +55,8 @@ class OrderController extends Controller
         }
 
         $orders = $query->paginate(9)->onEachSide(1);
+
+        $orders->appends(request()->query());
 
         $ordersCollection = $orders->getCollection()->map(function ($order) {
             return (new OrderResource($order))->withDateFormat('d-m-Y');
@@ -97,16 +101,22 @@ class OrderController extends Controller
             // Create directory
             Storage::disk('public')->makeDirectory($directory);
 
-            // Convert HEIC to JPEG using heif-convert
-            exec("heif-convert {$originalPath} {$jpegPath}", $output, $result);
+            if ($image->getClientOriginalExtension() === 'HEIC' || $image->getClientOriginalExtension() === 'HEIF') {
+                // Convert HEIC to JPEG using heif-convert
+                exec("heif-convert {$originalPath} {$jpegPath}", $output, $result);
 
-            // Check if conversion succeeded
-            if ($result !== 0 || !file_exists($jpegPath)) {
-                return back()->with('error', 'Failed to process HEIC image.');
+                // Check if conversion succeeded
+                if ($result !== 0 || !file_exists($jpegPath)) {
+                    dump("Failed to convert {$originalPath} {$jpegPath}");
+                    return back()->with('error', 'Failed to process HEIC image.');
+                }
+            } else {
+                $image->move(storage_path("app/public/{$directory}"), $filename);
             }
 
             // Resize the converted JPEG image
             $resizedImage = Image::make($jpegPath)
+                ->orientate()
                 ->resize(1920, 1080, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
@@ -118,18 +128,27 @@ class OrderController extends Controller
             $data['image_path'] = "{$directory}/{$filename}";
         }
 
+        $data['updated_by'] = auth()->id();
+
         // Store order
-        Order::create($data);
+        $order = Order::create($data);
+
+        // Fire an event for the new order
+        broadcast(new OrderCreated($order, auth()->id()));
+
+        $notificationController = new PushNotificationController();
+        $notificationController->sendPushNotification($order, 'create');
 
         return to_route("order.index")->with("success", "Нарачката е успешно креирана!");
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Order $order)
     {
-        $order->load("user");
+        $order->load("user", "updatedBy");
 
         return inertia('Order/Show', [
             'order' => (new OrderResource($order))->withDateFormat('d-m-Y')
@@ -175,6 +194,12 @@ class OrderController extends Controller
 
         // Update the order with the new data
         $order->update($data);
+        $order->updated_by = auth()->id();
+        $this->sendAdminNotification($order, 'update');
+        $order = $order->save();
+
+        $notificationController = new PushNotificationController();
+        $notificationController->sendPushNotification($order);
 
         return to_route("order.index")->with("success", "Нарачката " . $order->name . " е успешно изменета!");
     }
@@ -208,4 +233,5 @@ class OrderController extends Controller
         // Return a success response
         return redirect()->back()->with('success', 'Order status updated successfully!');
     }
+
 }
