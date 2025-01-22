@@ -13,14 +13,14 @@ export default function AuthenticatedLayout({header, children}) {
     useState(false);
 
 
-    useEffect(() => {
-    window.Echo.channel(`orders`)
-      .listen('OrderCreated', (event) => {
-        if (event.excluded_user_id !== window.authUserId) {
-          console.log(event)
-        }
-      })
-  }, [])
+  //   useEffect(() => {
+  //   window.Echo.channel(`orders`)
+  //     .listen('OrderCreated', (event) => {
+  //       if (event.excluded_user_id !== window.authUserId) {
+  //         console.log(event)
+  //       }
+  //     })
+  // }, [])
 
   const currentYear = new Date().getFullYear();
 
