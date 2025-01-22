@@ -87,7 +87,7 @@ export default function Dashboard({stats}) {
                 className="p-6 col-span-1 text-gray-900 dark:text-gray-100 bg-white rounded-md shadow-md sm:rounded-lg">
                 <h2 className="border-b-2 border-[#7F5026] uppercase tracking-widest text-sm">Достава</h2>
                 <div className="flex items-center justify-between mt-1">
-                  <p className="tracking-wider">За достава денес:<span><br/>({formattedDate})</span></p>
+                  <a href="/" className="tracking-wider hover:underline">За достава денес:<span><br/>({formattedDate})</span></a>
                   <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.forDelivery}</p>
                 </div>
               </div>
