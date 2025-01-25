@@ -12,7 +12,7 @@ export default function Edit({ mustVerifyEmail, status }) {
 
 
     const askForPermission = () => {
-      if ('Notification' in window) {
+      if ('Notification' in window && 'serviceWorker' in navigator) {
         Notification.requestPermission().then((permission) => {
           if (permission === 'granted') {
             navigator.serviceWorker.ready
