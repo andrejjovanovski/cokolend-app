@@ -199,7 +199,7 @@ export default function AuthenticatedLayout({header, children}) {
       </nav>
 
       {header && (
-        <header className="bg-white shadow dark:bg-gray-800 mt-[100px]">
+        <header className="bg-white shadow dark:bg-gray-800 mt-[64px] standalone:mt-[100px]">
           <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
             {header}
           </div>
