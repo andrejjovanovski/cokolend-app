@@ -134,7 +134,7 @@ class OrderController extends Controller
         $order = Order::create($data);
 
         // Fire an event for the new order
-        broadcast(new OrderCreated($order, auth()->id()));
+//        broadcast(new OrderCreated($order, auth()->id())); RED SCREEN POPUP
 
         $notificationController = new PushNotificationController();
         $notificationController->sendPushNotification($order, 'create');
@@ -195,11 +195,13 @@ class OrderController extends Controller
         // Update the order with the new data
         $order->update($data);
         $order->updated_by = auth()->id();
-        $this->sendAdminNotification($order, 'update');
-        $order = $order->save();
+
+        $order->save();
+
+        $order = Order::find($order->id);
 
         $notificationController = new PushNotificationController();
-        $notificationController->sendPushNotification($order);
+        $notificationController->sendPushNotification($order, 'update');
 
         return to_route("order.index")->with("success", "Нарачката " . $order->name . " е успешно изменета!");
     }

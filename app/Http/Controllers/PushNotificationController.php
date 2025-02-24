@@ -18,6 +18,7 @@ class PushNotificationController extends Controller
 
         $subscription = new PushNotification();
         $subscription->subscriptions = $data['subscriptions'];
+        $subscription->user_id = $data['user_id'];
         $subscription->save();
 
         return response()->json(['message' => 'Subscription successfully created'], 200);
@@ -46,14 +47,16 @@ class PushNotificationController extends Controller
 
         foreach ($notifications as $notification) {
             try {
-                $subscriptionData = json_decode($notification->subscriptions, true);
+                if (($notification->method === 'create' && $notification->payload->user_id !== $order->user_id) || ($notification->method === 'update' && $notification->payload->user_id !== $order->updated_by)) {
+                    $subscriptionData = json_decode($notification->subscriptions, true);
 
+                    $webPush->sendOneNotification(
+                        Subscription::create($subscriptionData),
+                        $payload,
+                        ['TTL' => 5000]
+                    );
+                }
 
-                $webPush->sendOneNotification(
-                    Subscription::create($subscriptionData),
-                    $payload,
-                    ['TTL' => 5000]
-                );
             } catch (\ErrorException $e) {
             }
         }
