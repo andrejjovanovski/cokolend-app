@@ -134,7 +134,7 @@ class OrderController extends Controller
         $order = Order::create($data);
 
         // Fire an event for the new order
-        broadcast(new OrderCreated($order, auth()->id()));
+//        broadcast(new OrderCreated($order, auth()->id())); RED SCREEN POPUP
 
         $notificationController = new PushNotificationController();
         $notificationController->sendPushNotification($order, 'create');
