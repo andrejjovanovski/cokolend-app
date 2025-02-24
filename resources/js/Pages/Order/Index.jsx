@@ -24,30 +24,30 @@ export default function Index({auth, orders, queryParams = null, success}) {
     setNotification({ show: false, message: '' });
   };
 
-  useEffect(() => {
-    const channel = window.Echo.private(`orders`);
-
-    channel.listen('OrderCreated', (e) => {
-      if (e.order.user_id !== auth.user.id) {
-        console.log(e.order);
-        // Show notification for new order
-        setNotification({
-          show: true,
-          message: `Креирана е нова нарачка!`
-        });
-
-        // Update orders list
-        setOrdersList(prevOrders => ({
-          ...prevOrders,
-          data: [e.order, ...prevOrders.data]
-        }));
-      }
-    });
-
-    return () => {
-      channel.stopListening('OrderCreated');
-    };
-  }, []);
+  // useEffect(() => {
+  //   const channel = window.Echo.private(`orders`);
+  //
+  //   channel.listen('OrderCreated', (e) => {
+  //     if (e.order.user_id !== auth.user.id) {
+  //       console.log(e.order);
+  //       // Show notification for new order
+  //       setNotification({
+  //         show: true,
+  //         message: `Креирана е нова нарачка!`
+  //       });
+  //
+  //       // Update orders list
+  //       setOrdersList(prevOrders => ({
+  //         ...prevOrders,
+  //         data: [e.order, ...prevOrders.data]
+  //       }));
+  //     }
+  //   });
+  //
+  //   return () => {
+  //     channel.stopListening('OrderCreated');
+  //   };
+  // }, []);
 
   const searchFieldChanged = (name, value) => {
     if (value) {

@@ -12,11 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->foreignId('updated_by')->nullable()->references('id')->on('users');
-
-        });
+        if (!Schema::hasColumn('orders', 'updated_by')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->foreignId('updated_by')->nullable()->references('id')->on('users');
+            });
+        }
     }
+
+
 
     /**
      * Reverse the migrations.
@@ -25,6 +28,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('updated_by');
+            $table->dropForeign('orders_updated_by_foreign');
         });
     }
 };
