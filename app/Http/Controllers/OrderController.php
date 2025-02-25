@@ -31,16 +31,23 @@ class OrderController extends Controller
                 ->where('production_status', '!=','delivered');
         }
 
-        if (request('delivery_date')) {
-            $query->where('delivery_date', '=', Carbon::parse(request('delivery_date')));
+        if (request('status')) {
+            if (request('status') == 'delivered') {
+                $query = Order::query()->with('user')
+                    ->where('production_status', '=','delivered')
+                    ->whereBetween('delivery_date', [Carbon::now()->subMonths(2), Carbon::now()])
+                    ->orderBy('delivery_date', 'asc');
+            } else {
+                $query->where('production_status', request('status'));
+            }
         }
 
         if (request('name')) {
             $query->where('name', 'like', '%' . request('name') . '%');
         }
 
-        if (request('status')) {
-            $query->where('production_status', request('status'));
+        if (request('delivery_date')) {
+            $query->where('delivery_date', '=', Carbon::parse(request('delivery_date')));
         }
 
         if (request('timeline')) {

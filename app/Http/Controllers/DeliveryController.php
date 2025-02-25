@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use Illuminate\Http\Request;
+use Inertia\Response;
+use Inertia\ResponseFactory;
 
 class DeliveryController extends Controller
 {
@@ -20,5 +21,20 @@ class DeliveryController extends Controller
         }
 
         return redirect()->back()->with('error', 'Order not found', 404);
+    }
+
+    /**
+     * @return Response|ResponseFactory
+     */
+    public function index() {
+        $deliveries = Order::with('user')
+            ->where('production_status','!=' ,'pending')
+            ->where('delivery_date', '=', today())
+            ->get();
+
+
+        return inertia("Delivery/Index", [
+            'deliveries' => OrderResource::collection($deliveries)
+        ]);
     }
 }
