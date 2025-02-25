@@ -16,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('order', OrderController::class);
     Route::resource('user', UserController::class);
+    Route::resource('delivery', DeliveryController::class);
 
     Route::post('/orders/{order}/mark-as-delivered', [DeliveryController::class, 'markAsDelivered'])->name('orders.mark-as-delivered');
     Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('order.update-status');
