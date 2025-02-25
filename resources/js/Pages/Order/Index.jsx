@@ -157,6 +157,7 @@ export default function Index({auth, orders, queryParams = null, success}) {
                       <option value="">Статус</option>
                       <option value="pending">На чекање</option>
                       <option value="processing">Прифатена</option>
+                      <option value="delivered">Доставени</option>
                     </SelectInput>
                     <SecondaryButton
                       className="py-3 w-full md:w-auto"
