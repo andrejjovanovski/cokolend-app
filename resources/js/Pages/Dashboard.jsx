@@ -1,8 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {Head, Link} from '@inertiajs/react';
+import useAuth from '../hooks/useAuth';
 
 export default function Dashboard({stats}) {
 
+  const {hasRole} = useAuth();
   const today = new Date();
   const formattedDate = today.toLocaleDateString('mk-MK', {
     day: '2-digit',
@@ -36,65 +38,60 @@ export default function Dashboard({stats}) {
                 </Link>
               </div>
 
-              <div
-                className="p-6 col-span-1 sm:col-span-2 text-gray-900 dark:text-gray-100 bg-white rounded-md shadow-md sm:rounded-lg">
-                <div className="flex items-center justify-between border-b-2 border-[#7F5026]">
-                  <h2 className="uppercase tracking-widest text-sm">Статус на нарачки</h2>
-                  <h2 className="uppercase tracking-widest text-sm">{formattedDate}</h2>
-                </div>
+              {!hasRole('sales') && (
+                <div
+                  className="p-6 col-span-1 sm:col-span-2 text-gray-900 dark:text-gray-100 bg-white rounded-md shadow-md sm:rounded-lg">
+                  <div className="flex items-center justify-between border-b-2 border-[#7F5026]">
+                    <h2 className="uppercase tracking-widest text-sm">Статус на нарачки</h2>
+                    <h2 className="uppercase tracking-widest text-sm">{formattedDate}</h2>
+                  </div>
 
                   <div className="flex items-center flex-col justify-between mt-2 gap-4 md:flex-row">
-                  <div className="w-full md:pe-3 md:border-e md:border-e-[#7F5026] h-full ">
-                    <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">На чекање:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.pendingOrders}</p>
+                    <div className="w-full md:pe-3 md:border-e md:border-e-[#7F5026] h-full ">
+                      <div className="flex  justify-between mt-1">
+                        <p className="tracking-wider">На чекање:</p>
+                        <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.pendingOrders}</p>
+                      </div>
+                      <div className="flex  justify-between mt-1">
+                        <p className="tracking-wider">Во изработка:</p>
+                        <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.inProgressOrders}</p>
+                      </div>
+                      <div className="flex  justify-between mt-1">
+                        <p className="tracking-wider">Завршени:</p>
+                        <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.deliveredOrders}</p>
+                      </div>
                     </div>
-                    <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">Во изработка:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.inProgressOrders}</p>
-                    </div>
-                    <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">Завршени:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.deliveredOrders}</p>
+
+                    <div className="w-full">
+                      <div className="flex  justify-between mt-1">
+                        <p className="tracking-wider">Нарачки:</p>
+                        <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersTodayRemote}</p>
+                      </div>
+                      <div className="flex  justify-between mt-1">
+                        <p className="tracking-wider">Нарачки (дуќан):</p>
+                        <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersTodayShop}</p>
+                      </div>
+                      <div className="flex  justify-between mt-1">
+                        <p className="tracking-wider">Вкупно нови нарачки денес:</p>
+                        <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersToday}</p>
+                      </div>
+                      <div className="flex  justify-between mt-1">
+                        <p className="tracking-wider">Вкупно нарачки:</p>
+                        <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.allOrders}</p>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="w-full">
-                    <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">Нарачки:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersTodayRemote}</p>
-                    </div>
-                    <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">Нарачки (дуќан):</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersTodayShop}</p>
-                    </div>
-                    <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">Вкупно нови нарачки денес:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.ordersToday}</p>
-                    </div>
-                    <div className="flex  justify-between mt-1">
-                      <p className="tracking-wider">Вкупно нарачки:</p>
-                      <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.allOrders}</p>
-                    </div>
-                  </div>
-
-
                 </div>
-
-              </div>
+              )}
 
               <div
                 className="p-6 col-span-1 text-gray-900 dark:text-gray-100 bg-white rounded-md shadow-md sm:rounded-lg">
                 <h2 className="border-b-2 border-[#7F5026] uppercase tracking-widest text-sm">Достава</h2>
                 <div className="flex items-center justify-between mt-1">
-                  {/*<Link*/}
-                  {/*  href={route('order.create')}*/}
-                  {/*  className="w-full bg-emerald-500 px-4 py-2 text-center font-bold text-white rounded shadow transition-all hover:bg-emerald-600 tracking-widest uppercase text-xs">*/}
-                  {/*  Креирај нарачка*/}
-                  {/*</Link>*/}
                   <Link
                     href={route('delivery.index')}
-                    className="tracking-wider hover:underline">За достава денес:<span><br/>({formattedDate})</span></Link>
+                    className="tracking-wider hover:underline">За достава
+                    денес:<span><br/>({formattedDate})</span></Link>
                   <p className="tracking-wider bg-gray-300 px-1 rounded-md">{stats.forDelivery}</p>
                 </div>
               </div>

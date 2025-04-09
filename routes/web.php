@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\CMSController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PushNotificationController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,10 +19,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('order', OrderController::class);
     Route::resource('user', UserController::class);
     Route::resource('delivery', DeliveryController::class);
+    Route::get('/cms-dashboard', [CMSController::class, 'dashboard'])->name('cms-dashboard');
 
     Route::post('/orders/{order}/mark-as-delivered', [DeliveryController::class, 'markAsDelivered'])->name('orders.mark-as-delivered');
     Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('order.update-status');
 
+    Route::post('/roles/update', [RoleController::class, 'update'])->name('roles.update');
 
 });
 

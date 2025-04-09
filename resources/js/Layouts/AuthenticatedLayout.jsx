@@ -3,11 +3,11 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import {Link, usePage} from '@inertiajs/react';
 import {useEffect, useState} from 'react';
-import axios from "axios";
+import useAuth from "@/hooks/useAuth.js";
 
 
-export default function AuthenticatedLayout({header, children}) {
-  const user = usePage().props.auth.user;
+export default function AuthenticatedLayout({ header, children}) {
+  const { user, can, hasRole } = useAuth();
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
@@ -51,6 +51,16 @@ export default function AuthenticatedLayout({header, children}) {
                 >
                   Нарачки
                 </NavLink>
+
+
+                {hasRole('admin') && (
+                  <NavLink
+                    href={route('cms-dashboard')}
+                    active={route().current('cms-dashboard')}
+                  >
+                    CMS Dashboard
+                  </NavLink>
+                )}
 
               </div>
             </div>

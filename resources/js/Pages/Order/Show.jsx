@@ -9,12 +9,14 @@ import SelectInput from "@/Components/SelectInput.jsx";
 import {Inertia} from '@inertiajs/inertia';
 import {MdDeleteOutline} from "react-icons/md";
 import {CiEdit} from "react-icons/ci";
+import useAuth from "@/hooks/useAuth.js";
 
 
 export default function Show({auth, order}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDelivered, setIsDelivered] = useState(order.delivered);
   const [productionStatus, setProductionStatus] = useState(order.production_status); // Initialize with order status
+  const {user, can, hasRole} = useAuth();
 
   // Mark as Delivered Handler
   const handleMarkAsDelivered = () => {
@@ -79,12 +81,13 @@ export default function Show({auth, order}) {
               />
 
             </Link>
-            <button
+            {!hasRole('sales') && (<button
               onClick={(e) => deleteOrder(order)}
               className="p-1 bg-red-500 text-white border border-red-500 dark:border-red-500 rounded shadow hover:bg-red-600">
               <MdDeleteOutline
                 className="w-5 h-5"/>
-            </button>
+            </button>)}
+
           </div>
         </div>
 
@@ -155,7 +158,6 @@ export default function Show({auth, order}) {
                       </p>
                     </div>
                   </div>
-
                 </div>
 
                 {/*RIGHT COL*/}
@@ -184,7 +186,6 @@ export default function Show({auth, order}) {
                     <label className="font-bold text-lg">Достава</label>
                     <p className="mt-1">{isDelivered ? 'Доставена' : 'Не е доставена'}</p>
                   </div>
-
                   <div className="mt-4 hidden">
                     <div className="flex gap-3 ">
                       <PrimaryButton
@@ -204,22 +205,26 @@ export default function Show({auth, order}) {
                 </div>
               </div>
 
-              <div className="mt-4 md:block">
-                <div className="flex gap-3 ">
-                  <PrimaryButton
-                    children={isDelivered ? 'Доставена' : 'Означи како доставено'}
-                    className="w-full justify-center"
-                    disabled={isDelivered || productionStatus !== 'processing'}
-                    onClick={handleMarkAsDelivered}
-                  />
-                  <SecondaryButton
-                    children="Промени статус"
-                    className="w-full"
-                    disabled={isDelivered}
-                    onClick={() => setIsModalOpen(true)}
-                  />
+              {!hasRole('sales') && (
+                <div className="mt-4 md:block">
+                  <div className="flex gap-3 ">
+                    {hasRole('admin') && (
+                      <PrimaryButton
+                        children={isDelivered ? 'Доставена' : 'Означи како доставено'}
+                        className="w-full justify-center"
+                        disabled={isDelivered || productionStatus !== 'processing'}
+                        onClick={handleMarkAsDelivered}
+                      />
+                    )}
+                    <SecondaryButton
+                      children="Промени статус"
+                      className="w-full"
+                      disabled={isDelivered}
+                      onClick={() => setIsModalOpen(true)}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
