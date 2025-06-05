@@ -62,7 +62,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+
     }
 
     public function updateFcmToken(Request $request)

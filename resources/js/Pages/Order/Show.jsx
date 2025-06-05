@@ -81,13 +81,14 @@ export default function Show({auth, order}) {
               />
 
             </Link>
-            {!hasRole('sales') && (<button
-              onClick={(e) => deleteOrder(order)}
-              className="p-1 bg-red-500 text-white border border-red-500 dark:border-red-500 rounded shadow hover:bg-red-600">
-              <MdDeleteOutline
-                className="w-5 h-5"/>
-            </button>)}
-
+            {!hasRole('sales') && (
+              <button
+                onClick={(e) => deleteOrder(order)}
+                className="p-1 bg-red-500 text-white border border-red-500 dark:border-red-500 rounded shadow hover:bg-red-600">
+                <MdDeleteOutline
+                  className="w-5 h-5"/>
+              </button>
+            )}
           </div>
         </div>
 

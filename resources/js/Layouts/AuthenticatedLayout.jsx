@@ -52,6 +52,13 @@ export default function AuthenticatedLayout({ header, children}) {
                   Нарачки
                 </NavLink>
 
+                <NavLink
+                  href={route('delivery.index')}
+                  active={route().current('delivery.index')}
+                >
+                  Достави
+                </NavLink>
+
 
                 {hasRole('admin') && (
                   <NavLink
@@ -174,6 +181,20 @@ export default function AuthenticatedLayout({ header, children}) {
               Нарачки
             </ResponsiveNavLink>
 
+            <ResponsiveNavLink
+              href={route('delivery.index')}
+              active={route().current('delivery.index')}
+            >
+              Достави
+            </ResponsiveNavLink>
+
+            <ResponsiveNavLink
+              href={route('cms-dashboard')}
+              active={route().current('cms-dashboard')}
+            >
+              CMS Dashboard
+            </ResponsiveNavLink>
+
             {/*<ResponsiveNavLink*/}
             {/*  href={route('user.index')}*/}
             {/*  active={route().current('user.index')}*/}
@@ -220,8 +241,8 @@ export default function AuthenticatedLayout({ header, children}) {
 
       <footer className="text-center py-4 bg-gray-100 border-t border-gray-300">
         <p className="text-sm text-gray-600">
-          Designed and developed by <a href="https://www.codeaxis.dev"><strong
-          className="font-semibold hover:underline">Codeaxis</strong></a> | &copy; <span
+          Designed and developed by <a href="https://www.andrejjovanovski.com" target={"_blank"}><strong
+          className="font-semibold hover:underline">Andrej</strong></a> | &copy; <span
           id="current-year">{currentYear}</span> All Rights Reserved.
         </p>
       </footer>

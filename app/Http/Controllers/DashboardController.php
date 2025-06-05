@@ -12,11 +12,11 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-
         $pendingOrders = Order::where('production_status', 'pending')->count();
         $inProgressOrders = Order::where('production_status', 'processing')->count();
         $deliveredOrders = Order::where('production_status', 'delivered')->count();
-        $forDelivery = Order::where('delivery_date', '=', date('Y-m-d'))->count();
+        $forDelivery = Order::where('delivery_date', '=', date('Y-m-d'))
+            ->where('production_status', '=', 'processing')->count();
         $allOrders = Order::where('production_status', '!=', 'completed')->count();
         $ordersToday = Order::whereDate('created_at', '=', Carbon::today())->count();
         $ordersTodayShop = Order::whereDate('created_at', date('Y-m-d'))
