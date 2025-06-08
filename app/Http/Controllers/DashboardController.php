@@ -6,7 +6,6 @@ use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use function Termwind\render;
 
 class DashboardController extends Controller
 {
@@ -43,6 +42,4 @@ class DashboardController extends Controller
             'stats' => $stats,
         ]);
     }
-
-
 }

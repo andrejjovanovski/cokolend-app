@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCMSRequest;
-use App\Http\Requests\UpdateCMSRequest;
 use App\Http\Resources\UserResource;
-use App\Models\CMS;
 use App\Models\User;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
