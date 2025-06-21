@@ -3,11 +3,11 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import {Link, usePage} from '@inertiajs/react';
 import {useEffect, useState} from 'react';
-import axios from "axios";
+import useAuth from "@/hooks/useAuth.js";
 
 
-export default function AuthenticatedLayout({header, children}) {
-  const user = usePage().props.auth.user;
+export default function AuthenticatedLayout({ header, children}) {
+  const { user, can, hasRole } = useAuth();
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
@@ -51,6 +51,23 @@ export default function AuthenticatedLayout({header, children}) {
                 >
                   Нарачки
                 </NavLink>
+
+                <NavLink
+                  href={route('delivery.index')}
+                  active={route().current('delivery.index')}
+                >
+                  Достави
+                </NavLink>
+
+
+                {hasRole('admin') && (
+                  <NavLink
+                    href={route('cms-dashboard')}
+                    active={route().current('cms-dashboard')}
+                  >
+                    CMS
+                  </NavLink>
+                )}
 
               </div>
             </div>
@@ -164,6 +181,20 @@ export default function AuthenticatedLayout({header, children}) {
               Нарачки
             </ResponsiveNavLink>
 
+            <ResponsiveNavLink
+              href={route('delivery.index')}
+              active={route().current('delivery.index')}
+            >
+              Достави
+            </ResponsiveNavLink>
+
+            <ResponsiveNavLink
+              href={route('cms-dashboard')}
+              active={route().current('cms-dashboard')}
+            >
+              CMS
+            </ResponsiveNavLink>
+
             {/*<ResponsiveNavLink*/}
             {/*  href={route('user.index')}*/}
             {/*  active={route().current('user.index')}*/}
@@ -210,8 +241,8 @@ export default function AuthenticatedLayout({header, children}) {
 
       <footer className="text-center py-4 bg-gray-100 border-t border-gray-300">
         <p className="text-sm text-gray-600">
-          Designed and developed by <a href="https://www.codeaxis.dev"><strong
-          className="font-semibold hover:underline">Codeaxis</strong></a> | &copy; <span
+          Designed and developed by <a href="https://www.andrejjovanovski.com" target={"_blank"}><strong
+          className="font-semibold hover:underline">Andrej</strong></a> | &copy; <span
           id="current-year">{currentYear}</span> All Rights Reserved.
         </p>
       </footer>

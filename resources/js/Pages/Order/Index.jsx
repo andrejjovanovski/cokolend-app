@@ -9,8 +9,7 @@ import SecondaryButton from "@/Components/SecondaryButton.jsx";
 import dayjs from "dayjs";
 import {DatePicker} from "antd";
 import PopupNotification from "@/Components/PopupNotification.jsx";
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import useAuth from "@/hooks/useAuth.js";
 
 export default function Index({auth, orders, queryParams = null, success}) {
   queryParams = queryParams || {};
@@ -20,8 +19,10 @@ export default function Index({auth, orders, queryParams = null, success}) {
     message: ''
   });
 
+  const {hasRole} = useAuth();
+
   const handleCloseNotification = () => {
-    setNotification({ show: false, message: '' });
+    setNotification({show: false, message: ''});
   };
 
   // useEffect(() => {
@@ -157,7 +158,9 @@ export default function Index({auth, orders, queryParams = null, success}) {
                       <option value="">Статус</option>
                       <option value="pending">На чекање</option>
                       <option value="processing">Прифатена</option>
-                      <option value="delivered">Доставени</option>
+                      {!hasRole('sales') && (
+                        <option value="delivered">Доставени</option>
+                      )}
                     </SelectInput>
                     <SecondaryButton
                       className="py-3 w-full md:w-auto"

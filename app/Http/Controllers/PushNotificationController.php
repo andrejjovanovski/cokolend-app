@@ -45,6 +45,7 @@ class PushNotificationController extends Controller
 
         $notifications = PushNotification::all();
 
+//        TODO: Notification are not received on all users!!!
         foreach ($notifications as $notification) {
             try {
                 if (($notification->method === 'create' && $notification->payload->user_id !== $order->user_id) || ($notification->method === 'update' && $notification->payload->user_id !== $order->updated_by)) {

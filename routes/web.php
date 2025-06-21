@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\CMSController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\OrderController;
@@ -7,7 +9,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PushNotificationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::redirect('/', 'dashboard');
 
@@ -17,11 +18,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('order', OrderController::class);
     Route::resource('user', UserController::class);
     Route::resource('delivery', DeliveryController::class);
+    Route::get('/cms-dashboard', [CMSController::class, 'dashboard'])->name('cms-dashboard');
 
     Route::post('/orders/{order}/mark-as-delivered', [DeliveryController::class, 'markAsDelivered'])->name('orders.mark-as-delivered');
     Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('order.update-status');
 
-
+//    Report routes
+    Route::get('/reports/summary', [ReportController::class, 'summaryReport']);
 });
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
