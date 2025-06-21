@@ -65,7 +65,7 @@ export default function AuthenticatedLayout({ header, children}) {
                     href={route('cms-dashboard')}
                     active={route().current('cms-dashboard')}
                   >
-                    CMS Dashboard
+                    CMS
                   </NavLink>
                 )}
 
@@ -192,7 +192,7 @@ export default function AuthenticatedLayout({ header, children}) {
               href={route('cms-dashboard')}
               active={route().current('cms-dashboard')}
             >
-              CMS Dashboard
+              CMS
             </ResponsiveNavLink>
 
             {/*<ResponsiveNavLink*/}
